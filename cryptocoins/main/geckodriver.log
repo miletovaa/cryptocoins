@@ -1,0 +1,16 @@
+1649425782441	geckodriver	INFO	Listening on 127.0.0.1:53905
+1649425782448	mozrunner::runner	INFO	Running command: "/snap/bin/firefox" "--marionette" "--remote-debugging-port" "45019" "-no-remote" "-profile" "/tmp/rust_mozprofileIXrxGr"
+amdgpu: os_same_file_description couldn't determine if two DRM fds reference the same file description.
+If they do, bad things may happen!
+
+###!!! [Parent][PImageBridgeParent] Error: RunMessage(msgname=PImageBridge::Msg_WillClose) Channel closing: too late to send/recv, messages will be lost
+
+1649425795470	geckodriver	INFO	Listening on 127.0.0.1:43923
+1649425795477	mozrunner::runner	INFO	Running command: "/snap/bin/firefox" "--marionette" "--remote-debugging-port" "45003" "-no-remote" "-profile" "/tmp/rust_mozprofile8P7OU1"
+amdgpu: os_same_file_description couldn't determine if two DRM fds reference the same file description.
+If they do, bad things may happen!
+1649426098286	geckodriver	INFO	Listening on 127.0.0.1:46657
+1649426098291	mozrunner::runner	INFO	Running command: "/snap/bin/firefox" "--marionette" "--remote-debugging-port" "37789" "-no-remote" "-profile" "/tmp/rust_mozprofilei2YjXO"
+amdgpu: os_same_file_description couldn't determine if two DRM fds reference the same file description.
+If they do, bad things may happen!
+Invalid port. Exiting...
