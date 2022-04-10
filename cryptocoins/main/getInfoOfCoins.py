@@ -3,9 +3,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import datetime, time
 
-coin_list = ['juno', 'atom', 'ust', 'btsg', 'luna', 'osmo', 'stars', 'huahua', 'akt', 'xprt', 'cmdx', 'dig', 'scrt',
-             'neta', 'canlab', 'tuck', 'hulc', 'bcna', 'hope', 'rac', 'marble', 'coin', 'primo', 'daisy', 'future',
-             'bfot', 'phmn', 'arto']
+junoswap_list = ['juno', 'atom', 'ust', 'btsg', 'luna', 'osmo', 'stars', 'huahua', 'akt', 'xprt', 'cmdx', 'dig', 'scrt',
+                 'neta', 'canlab', 'tuck', 'hulc', 'bcna', 'hope', 'rac', 'marble', 'coin', 'primo', 'daisy', 'future',
+                 'bfot', 'phmn', 'arto']
+
+osmosis_list = ['atom', 'ion', 'akt', 'dvpn', 'iris', 'cro', 'xprt', 'regen', 'iov', 'ngm', 'eeur', 'juno', 'like',
+                'ixo', 'ust', 'luna', 'bcna', 'btsg', 'xki', 'scrt', 'med', 'boot', 'cmdx', 'cheq', 'stars', 'huahua',
+                'lum', 'vdl', 'dsm', 'dig', 'grav', 'somm', 'rowan', 'band', 'darc', 'neta', 'umee', 'dec', 'pstake',
+                'marble', 'swth']
+
+marbledao_list = ['block', 'marble', 'juno', 'atom', 'ust', 'luna', 'osmo', 'scrt', 'neta']
 
 
 class getInfo:
@@ -74,7 +81,7 @@ class getInfo:
                         addCoinsButton.click()
                         addCoins = driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')
                         addCoins[el2].click()
-                        prices_of_coin = [coin_list[el2]]
+                        prices_of_coin = [junoswap_list[el2]]
                         for el in values:
                             start = datetime.datetime.now()
                             mainCoinInput.send_keys(Keys.CONTROL + "a")
@@ -141,7 +148,7 @@ class getInfo:
 
         def get_prices(main_coin_id, values, add_coins):
 
-            allCoins = getInfo.Marbledao.get_all_coins()
+            allCoins = marbledao_list
 
             # Configs
             path = './chromedriver'
@@ -190,15 +197,74 @@ class getInfo:
                     continue
             return prices_of_coins
 
-            time.sleep(1000)
+    class Osmosis:
+        def get_all_coins():
+            # Configs
+            path = './chromedriver'
+            driver = webdriver.Chrome(path)
+            url = "https://app.osmosis.zone"
+            driver.get(url)
+
+            try:
+                driver.find_element(by=By.CLASS_NAME, value='mr-5').click()
+                driver.find_element(by=By.CLASS_NAME, value='px-8').click()
+            except:
+                pass
+
+            driver.find_elements(by=By.CLASS_NAME, value='css-1de6nk0')[0].click()
+
+            return [el.find_element(by=By.TAG_NAME, value='h5').text.lower() for el in
+                    driver.find_elements(by=By.CLASS_NAME, value='ml-3')]
+
+        def get_prices(main_coin_id, values, add_coins):
+            # Configs
+            path = './chromedriver'
+            driver = webdriver.Chrome(path)
+            url = "https://app.osmosis.zone"
+            driver.get(url)
+
+            try:
+                driver.find_element(by=By.CLASS_NAME, value='mr-5').click()
+                driver.find_element(by=By.CLASS_NAME, value='px-8').click()
+            except:
+                pass
+
+            driver.find_elements(by=By.CLASS_NAME, value='css-1de6nk0')[0].click()
+            driver.find_elements(by=By.CLASS_NAME, value='css-1dlj0eh')[main_coin_id].click()
+
+            prices_of_coins = []
+            for el in add_coins:
+                driver.find_elements(by=By.CLASS_NAME, value='css-1de6nk0')[1].click()
+                driver.find_elements(by=By.CLASS_NAME, value='css-1dlj0eh')[el].click()
+                prices_of_coin = [osmosis_list[el]]
+                for el2 in values:
+                    main_coin_input = driver.find_elements(by=By.CLASS_NAME, value='css-1ui17as')[0]
+                    main_coin_input.send_keys(Keys.CONTROL + 'a')
+                    main_coin_input.send_keys(Keys.DELETE)
+                    main_coin_input.send_keys(str(el2))
+                    time.sleep(1)
+                    response_input = driver.find_elements(by=By.CLASS_NAME, value='css-1alvqnw')[0].text.split(' ')[1]
+                    flip = driver.find_element(by=By.CLASS_NAME, value='css-1so39r0')
+                    flip.click()
+                    flipped_input = driver.find_elements(by=By.CLASS_NAME, value='css-1alvqnw')[0].text.split(' ')[1]
+                    prices_of_coin.append([el2, response_input, flipped_input])
+                    time.sleep(1)
+                    flip.click()
+                prices_of_coins.append(prices_of_coin)
+
+            return prices_of_coins
 
 
-# Junoswap
+# Junoswap (done)
 # print(getInfo.JunoSwap.get_prices(0, [80, 100], range(0, 20)))
 
 # Sifchain
 # getInfo.Sifchain.get_all_coins()
 
-# Marbledao
+# Marbledao (done)
 # print(getInfo.Marbledao.get_all_coins())
-print(getInfo.Marbledao.get_prices(6, [80, 100], range(9)))
+# print(getInfo.Marbledao.get_prices(6, [80, 100], range(9)))
+
+# Osmosis
+# print(getInfo.Osmosis.get_all_coins())
+print(getInfo.Osmosis.get_prices(3, [80, 100], [1, 2, 3, 4]))
