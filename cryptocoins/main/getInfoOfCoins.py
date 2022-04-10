@@ -39,73 +39,76 @@ class getInfo:
             return list_of_coins
 
         ###################################################################
-        def get_prices(self, main_coin_id, values, add_coins):
+        def get_prices(main_coin_id, values, add_coins):
+            try:
+                # Start time
+                start_main = datetime.datetime.now()
 
-            start_main = datetime.datetime.now()
+                # Prices of coins (response)
+                prices = []
 
-            prices = []
+                # Configs
+                path = './chromedriver'
+                driver = webdriver.Chrome(path)
+                url = "https://junoswap.com/"
+                driver.get(url)
 
-            path = './chromedriver'
-            driver = webdriver.Chrome(path)
-            url = "https://junoswap.com/"
-            driver.get(url)
+                # Open list to choose main coin
+                driver.find_element(by=By.CLASS_NAME, value='c-fkNNfJ-cjOYsE-state-selected').click()
 
-            mainCoinInput = driver.find_element(by=By.CLASS_NAME, value='c-fkNNfJ')
-            all_coins = driver.find_elements(by=By.CLASS_NAME, value='c-frhyQ')
-            main_coin = all_coins[main_coin_id]
+                # Get list of all coins ???????????????????????????????
+                all_coins = driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')
 
-            inputs = driver.find_elements(by=By.CLASS_NAME, value='c-dwExUq')
-            mainCoinInput = inputs[0]
-            info_input = inputs[1]
-            mainCoinInput.send_keys(u'\ue009' + u'\ue003')
+                # Choose a main coin
+                driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')[main_coin_id].click()
 
-            ################
-            mainCoinInput.click()
-            main_coin.click()
+                # Get main coin input
+                mainCoinInput = driver.find_elements(by=By.CLASS_NAME, value='c-dwExUq')[0]
 
-            addCoins = driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')
+                for el2 in add_coins:
+                    if main_coin_id != el2:
+                        # Button for choosing an addiction coins
+                        addCoinsButton = driver.find_elements(by=By.CLASS_NAME, value='c-gejiUb')[1]
 
-            addCoins[1].click()
+                        # Click button for choosing an addiction coin
+                        addCoinsButton.click()
+                        addCoins = driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')
+                        addCoins[el2].click()
+                        # time.sleep(2)
+                        prices_of_coin = []
+                        for el in values:
+                            start = datetime.datetime.now()
+                            mainCoinInput.send_keys(Keys.CONTROL + "a")
+                            mainCoinInput.send_keys(Keys.DELETE)
+                            mainCoinInput.send_keys(str(el))
 
-            ################
-            for el2 in add_coins:
-                # Click button for choosing an addiction coins
-                addCoinsButton = driver.find_elements(by=By.CLASS_NAME, value='xeLnj')
-                addCoinsButton[1].click()
-                # print(addCoins[main_coin_id+2])
-                addCoins = driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')
-                addCoins[el2].click()
-                price_of_coin = []
-                for el in values:
-                    start = datetime.datetime.now()
-                    mainCoinInput.send_keys(Keys.CONTROL + "a")
-                    mainCoinInput.send_keys(Keys.DELETE)
-                    mainCoinInput.send_keys(str(el))
+                            coin_name = coin_list[el2]
+                            input_value = mainCoinInput.get_property('value')
+                            time.sleep(0.3)
+                            response_value = driver.find_elements(by=By.CLASS_NAME, value='c-dwExUq')[1].get_property(
+                                'value')
+                            flip = driver.find_element(by=By.CLASS_NAME, value='c-PJLV')
+                            flip.click()
+                            time.sleep(0.4)
 
-                    coin_name = coin_list[el2]
-                    input_value = mainCoinInput.get_property('value')
-                    time.sleep(0.35)
-                    response_value = driver.find_elements(by=By.CLASS_NAME, value='c-dwExUq')[1].get_property('value')
+                            flipped_value = driver.find_elements(by=By.CLASS_NAME, value='c-dwExUq')[1].get_property(
+                                'value')
+                            flip.click()
 
-                    flip = driver.find_element(by=By.CLASS_NAME, value='jBRuXC')
-                    flip.click()
-                    time.sleep(0.35)
+                            print(
+                                f'[{(datetime.datetime.now() - start).seconds}.{(datetime.datetime.now() - start).microseconds} sec]')
+                            prices_of_coin.append([coin_name, input_value, response_value, flipped_value])
+                        prices.append(prices_of_coin)
+                    else:
+                        continue
 
-                    flipped_value = driver.find_elements(by=By.CLASS_NAME, value='c-dwExUq')[1].get_property('value')
-                    flip.click()
-
-                    print(
-                        f'[{(datetime.datetime.now() - start).seconds}.{(datetime.datetime.now() - start).microseconds} sec]')
-                    price_of_coin.append([coin_name, input_value, response_value, flipped_value])
-                prices.append(price_of_coin)
-
-            driver.close()
-            delay_main = datetime.datetime.now() - start_main
-            return prices
-            print(delay_main)
+                driver.close()
+                delay_main = datetime.datetime.now() - start_main
+                print(delay_main)
+                return prices
+            except Exception as e:
+                print(str(e))
+                time.sleep(100000)
 
 
-print(getInfo.JunoSwap.get_prices(self=None, main_coin_id=3, values=[80, 100],
-                            add_coins=range(1,10)))
-
-# print(getInfo.JunoSwap.get_all_coins())
+print(getInfo.JunoSwap.get_prices(0, [80, 100], range(0, 20)))
