@@ -74,15 +74,13 @@ class getInfo:
                         addCoinsButton.click()
                         addCoins = driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')
                         addCoins[el2].click()
-                        # time.sleep(2)
-                        prices_of_coin = []
+                        prices_of_coin = [coin_list[el2]]
                         for el in values:
                             start = datetime.datetime.now()
                             mainCoinInput.send_keys(Keys.CONTROL + "a")
                             mainCoinInput.send_keys(Keys.DELETE)
                             mainCoinInput.send_keys(str(el))
 
-                            coin_name = coin_list[el2]
                             input_value = mainCoinInput.get_property('value')
                             time.sleep(0.3)
                             response_value = driver.find_elements(by=By.CLASS_NAME, value='c-dwExUq')[1].get_property(
@@ -97,7 +95,7 @@ class getInfo:
 
                             print(
                                 f'[{(datetime.datetime.now() - start).seconds}.{(datetime.datetime.now() - start).microseconds} sec]')
-                            prices_of_coin.append([coin_name, input_value, response_value, flipped_value])
+                            prices_of_coin.append([input_value, response_value, flipped_value])
                         prices.append(prices_of_coin)
                     else:
                         continue
@@ -110,5 +108,97 @@ class getInfo:
                 print(str(e))
                 time.sleep(100000)
 
+    class Sifchain:
+        def get_all_coins():
+            # Configs
+            path = './chromedriver'
+            driver = webdriver.Chrome(path)
+            url = "https://sifchain-dex.forbole.com/#/swap?from=uatom&to=rowan&slippage=1.0"
+            driver.get(url)
+            time.sleep(4)
+            print(len(driver.find_elements(by=By.TAG_NAME, value='button')))
 
-print(getInfo.JunoSwap.get_prices(0, [80, 100], range(0, 20)))
+            # Click on button of all coins
+            driver.find_elements(by=By.TAG_NAME, value='button')[7].click()
+            time.sleep(10000)
+
+    class Marbledao:
+        def get_all_coins():
+            # Configs
+            path = './chromedriver'
+            driver = webdriver.Chrome(path)
+            url = "https://app1.marbledao.finance/"
+            driver.get(url)
+
+            # Click on button of all coins
+            driver.find_elements(by=By.CLASS_NAME, value='c-feNcEI')[0].click()
+
+            coins = [el.text.lower() for el in
+                     driver.find_element(by=By.CLASS_NAME, value='c-fPFUuh').find_elements(by=By.CLASS_NAME,
+                                                                                           value='c-dOfGRD-ihyvuql-css')[
+                     ::2]]
+            return coins
+
+        def get_prices(main_coin_id, values, add_coins):
+
+            allCoins = getInfo.Marbledao.get_all_coins()
+
+            # Configs
+            path = './chromedriver'
+            driver = webdriver.Chrome(path)
+            url = "https://app1.marbledao.finance/"
+            driver.get(url)
+
+            # Click on button of all coins
+            driver.find_elements(by=By.CLASS_NAME, value='c-feNcEI')[0].click()
+
+            # Choose a main coin
+            driver.find_element(by=By.CLASS_NAME, value='c-fPFUuh').find_elements(by=By.CLASS_NAME,
+                                                                                  value='c-dOfGRD-ihyvuql-css')[::2][
+                main_coin_id].click()
+
+            prices_of_coins = []
+
+            for el in add_coins:
+                if el != main_coin_id:
+                    # Click on button of all addiction coins
+                    driver.find_elements(by=By.CLASS_NAME, value='c-feNcEI')[1].click()
+                    # Choose an addiction coin
+                    driver.find_element(by=By.CLASS_NAME, value='c-fPFUuh').find_elements(by=By.CLASS_NAME,
+                                                                                          value='c-dOfGRD-ihyvuql-css')[
+                    ::2][el].click()
+
+                    prices_of_coin = [allCoins[el]]
+                    # Loop
+                    for el2 in values:
+                        mainCoinInput = driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[0]
+                        mainCoinInput.send_keys(Keys.CONTROL + 'a')
+                        mainCoinInput.send_keys(Keys.DELETE)
+                        mainCoinInput.send_keys(str(el2))
+
+                        addCoinInput = driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[1]
+                        value = float(el2)
+                        value2 = float(addCoinInput.get_attribute('value'))
+                        flip = driver.find_element(by=By.CLASS_NAME, value='kOSkYZ')
+                        flip.click()
+                        value_flipped = float(
+                            driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[0].get_attribute('value'))
+                        flip.click()
+                        prices_of_coin.append([value, value2, value_flipped])
+                    prices_of_coins.append(prices_of_coin)
+                else:
+                    continue
+            return prices_of_coins
+
+            time.sleep(1000)
+
+
+# Junoswap
+# print(getInfo.JunoSwap.get_prices(0, [80, 100], range(0, 20)))
+
+# Sifchain
+# getInfo.Sifchain.get_all_coins()
+
+# Marbledao
+# print(getInfo.Marbledao.get_all_coins())
+print(getInfo.Marbledao.get_prices(6, [80, 100], range(9)))
