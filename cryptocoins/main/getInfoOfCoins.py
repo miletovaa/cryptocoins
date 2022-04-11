@@ -24,13 +24,15 @@ sifchain_list = ['rowan', '1inch', 'aave', 'akro', 'akt', 'ant', 'atom', 'axs', 
                  'susd', 'sushi', 'sxp', 'tidal', 'toke', 'tshp', 'tusd', 'ufo', 'uma', 'uni', 'usdc', 'usdt', 'ust',
                  'ust', 'wbtc', 'wfil', 'wscrt', 'xprt', 'yfi', 'zcn', 'zcx', 'zrx']
 
+driver_path = './chromedriver'
+
 
 class getInfo:
     class JunoSwap:
         def get_all_coins():
             start = datetime.datetime.now()
 
-            path = '../chromedriver'
+            path = driver_path
             driver = webdriver.Chrome(path)
             url = "https://junoswap.com/"
             driver.get(url)
@@ -58,12 +60,12 @@ class getInfo:
         ###################################################################
         def get_prices(main_coin_id, values, add_coins):
             try:
-
+                start = datetime.datetime.now()
                 # Prices of coins (response)
                 prices = []
 
                 # Configs
-                path = '../chromedriver'
+                path = driver_path
                 driver = webdriver.Chrome(path)
                 url = "https://junoswap.com/"
                 driver.get(url)
@@ -115,6 +117,7 @@ class getInfo:
                         continue
 
                 driver.close()
+                print(f'[JunoSwap: {datetime.datetime.now() - start}]')
                 return prices
             except Exception as e:
                 print(str(e))
@@ -123,7 +126,7 @@ class getInfo:
     class Sifchain:
         def get_all_coins():
             # Configs
-            path = '../chromedriver'
+            path = driver_path
             driver = webdriver.Chrome(path)
             url = "https://sifchain-dex.forbole.com/#/swap?from=uatom&to=rowan&slippage=1.0"
             driver.get(url)
@@ -141,13 +144,14 @@ class getInfo:
             # driver.find_elements(by=By.TAG_NAME, value='button')[9].click()
 
         def get_prices(main_coin_id, values, add_coins):
+            start = datetime.datetime.now()
             # Configs
-            path = '../chromedriver'
+            path = driver_path
             driver = webdriver.Chrome(path)
             url = "https://sifchain-dex.forbole.com/#/swap?from=uatom&to=rowan&slippage=1.0"
             driver.get(url)
             print(f'\n')
-            time.sleep(1)
+            time.sleep(3)
 
             # Click on button of all coins
             driver.find_elements(by=By.TAG_NAME, value='button')[7].click()
@@ -185,13 +189,13 @@ class getInfo:
                     prices_of_coins.append(prices_of_coin)
                 else:
                     continue
-
+            print(f'[Sifchain: {datetime.datetime.now() - start}]')
             return prices_of_coins
 
     class Marbledao:
         def get_all_coins():
             # Configs
-            path = '../chromedriver'
+            path = driver_path
             driver = webdriver.Chrome(path)
             url = "https://app1.marbledao.finance/"
             driver.get(url)
@@ -207,11 +211,11 @@ class getInfo:
             return coins
 
         def get_prices(main_coin_id, values, add_coins):
-
+            start = datetime.datetime.now()
             allCoins = marbledao_list
 
             # Configs
-            path = '../chromedriver'
+            path = driver_path
             driver = webdriver.Chrome(path)
             url = "https://app1.marbledao.finance/"
             driver.get(url)
@@ -256,12 +260,13 @@ class getInfo:
                     prices_of_coins.append(prices_of_coin)
                 else:
                     continue
+            print(f'[Marbledao: {datetime.datetime.now() - start}]')
             return prices_of_coins
 
     class Osmosis:
         def get_all_coins():
             # Configs
-            path = '../chromedriver'
+            path = driver_path
             driver = webdriver.Chrome(path)
             url = "https://app.osmosis.zone"
             driver.get(url)
@@ -278,8 +283,9 @@ class getInfo:
                     driver.find_elements(by=By.CLASS_NAME, value='ml-3')]
 
         def get_prices(main_coin_id, values, add_coins):
+            start = datetime.datetime.now()
             # Configs
-            path = '../chromedriver'
+            path = driver_path
             driver = webdriver.Chrome(path)
             url = "https://app.osmosis.zone"
             driver.get(url)
@@ -313,6 +319,7 @@ class getInfo:
                     time.sleep(1)
                     flip.click()
                 prices_of_coins.append(prices_of_coin)
+            print(f'[Osmosis: {datetime.datetime.now() - start}]')
             return prices_of_coins
 
 
@@ -335,7 +342,7 @@ if __name__ == '__main__':
 
     def save_junoswap():
         try:
-            data = getInfo.JunoSwap.get_prices(0, [80, 100], range(5))
+            data = getInfo.JunoSwap.get_prices(0, [80, 100], range(11))
             with open('junoswap.pickle', 'wb') as f:
                 pickle.dump(data, f)
             print(f'[Junoswap is loaded]')
@@ -345,27 +352,29 @@ if __name__ == '__main__':
 
     def save_sifchain():
         try:
-            data = getInfo.Sifchain.get_prices(0, [80, 100], range(5))
+            data = getInfo.Sifchain.get_prices(0, [80, 100], range(11))
             with open('sifchain.pickle', 'wb') as f:
                 pickle.dump(data, f)
             print(f'[Sifchain is loaded]')
-        except:
+        except Exception as e:
+            print(str(e))
             print(f'[Sifchain is not loaded!]')
 
 
     def save_marbledao():
         try:
-            data = getInfo.Marbledao.get_prices(0, [80, 100], range(5))
+            data = getInfo.Marbledao.get_prices(0, [80, 100], range(11))
             with open('marbledao.pickle', 'wb') as f:
                 pickle.dump(data, f)
             print(f'[Marbledao is loaded]')
-        except:
+        except Exception as e:
+            print(str(e))
             print(f'[Marbledao is not loaded!]')
 
 
     def save_osmosis():
         try:
-            data = getInfo.Osmosis.get_prices(0, [80, 100], range(5))
+            data = getInfo.Osmosis.get_prices(0, [80, 100], range(11))
             with open('osmosis.pickle', 'wb') as f:
                 pickle.dump(data, f)
             print(f'[Osmosis is loaded]')
