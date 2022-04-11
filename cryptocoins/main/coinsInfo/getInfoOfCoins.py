@@ -372,11 +372,11 @@ if __name__ == '__main__':
         except:
             print(f'[Osmosis is not loaded!]')
 
+
     junoswap = Process(target=save_junoswap)
     junoswap.start()
     sifchain = Process(target=save_sifchain)
     sifchain.start()
-    marbledao = Process(target=save_marbledao)
     marbledao = Process(target=save_marbledao)
     marbledao.start()
     osmosis = Process(target=save_osmosis)
