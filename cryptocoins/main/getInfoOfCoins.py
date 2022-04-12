@@ -30,7 +30,6 @@ driver_path = './chromedriver'
 class getInfo:
     class JunoSwap:
         def get_all_coins():
-            start = datetime.datetime.now()
 
             path = driver_path
             driver = webdriver.Chrome(path)
@@ -52,15 +51,11 @@ class getInfo:
                 except Exception as e:
                     continue
 
-            delay = datetime.datetime.now() - start
-            print(f'\nDelay: {delay.seconds}.{delay.microseconds}\n')
-
             return list_of_coins
 
         ###################################################################
-        def get_prices(main_coin_id, values, add_coins):
+        def get_prices(main_coin, values, add_coins_names):
             try:
-                start = datetime.datetime.now()
                 # Prices of coins (response)
                 prices = []
 
@@ -73,6 +68,15 @@ class getInfo:
 
                 # Open list to choose main coin
                 driver.find_element(by=By.CLASS_NAME, value='c-fkNNfJ-cjOYsE-state-selected').click()
+                main_coin_id = [el.text.split()[0].lower() for el in
+                                driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')].index(main_coin)
+                add_coins = []
+                for item in add_coins_names:
+                    try:
+                        add_coins.append([el.text.split()[0].lower() for el in
+                                          driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')].index(item))
+                    except:
+                        continue
 
                 # # Get list of all coins ???????????????????????????????
                 # all_coins = driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')
@@ -117,7 +121,6 @@ class getInfo:
                         continue
 
                 driver.close()
-                print(f'[JunoSwap: {datetime.datetime.now() - start}]')
                 return prices
             except Exception as e:
                 print(str(e))
@@ -143,8 +146,7 @@ class getInfo:
             # # # Click on button to swipe coins
             # driver.find_elements(by=By.TAG_NAME, value='button')[9].click()
 
-        def get_prices(main_coin_id, values, add_coins):
-            start = datetime.datetime.now()
+        def get_prices(main_coin, values, add_coins_names):
             # Configs
             path = driver_path
             driver = webdriver.Chrome(path)
@@ -155,14 +157,24 @@ class getInfo:
 
             # Click on button of all coins
             driver.find_elements(by=By.TAG_NAME, value='button')[7].click()
+            all_coins = [el.text.split('\n')[0].lower() for el in
+                         driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
+            main_coin_id = all_coins.index(main_coin)
+            add_coins = []
+            for el in add_coins_names:
+                try:
+                    add_coins.append(all_coins.index(el))
+                except:
+                    continue
             driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[main_coin_id].click()
+            # print(driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[main_coin_id].text)
 
             # driver.find_elements(by=By.CLASS_NAME, value='token-input')[1].send_keys('100')
             # driver.find_elements(by=By.CLASS_NAME, value='token-input')[3].get_attribute('value')
 
             prices_of_coins = []
             for el in add_coins:
-                prices_of_coin = [sifchain_list[el]]
+                prices_of_coin = [all_coins[el]]
                 if main_coin_id != el:
                     # Click on button of all addiction coins
                     driver.find_elements(by=By.TAG_NAME, value='button')[10].click()
@@ -189,7 +201,6 @@ class getInfo:
                     prices_of_coins.append(prices_of_coin)
                 else:
                     continue
-            print(f'[Sifchain: {datetime.datetime.now() - start}]')
             return prices_of_coins
 
     class Marbledao:
@@ -210,8 +221,7 @@ class getInfo:
                      ::2]]
             return coins
 
-        def get_prices(main_coin_id, values, add_coins):
-            start = datetime.datetime.now()
+        def get_prices(main_coin, values, add_coins_names):
             allCoins = marbledao_list
 
             # Configs
@@ -223,6 +233,16 @@ class getInfo:
 
             # Click on button of all coins
             driver.find_elements(by=By.CLASS_NAME, value='c-feNcEI')[0].click()
+
+            all_coins_names = [el.text.lower() for el in
+                               driver.find_element(by=By.CLASS_NAME, value='c-fPFUuh').find_elements(by=By.CLASS_NAME,
+                                                                                                     value='c-dOfGRD-ihyvuql-css')[
+                               ::2]]
+
+            add_coins = []
+            for el in add_coins_names:
+                add_coins.append(all_coins_names.index(el))
+            main_coin_id = all_coins_names.index(main_coin)
 
             # Choose a main coin
             driver.find_element(by=By.CLASS_NAME, value='c-fPFUuh').find_elements(by=By.CLASS_NAME,
@@ -248,19 +268,21 @@ class getInfo:
                         mainCoinInput.send_keys(Keys.DELETE)
                         mainCoinInput.send_keys(str(el2))
 
+                        time.sleep(0.35)
+
                         addCoinInput = driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[1]
                         value = float(el2)
                         value2 = float(addCoinInput.get_attribute('value'))
                         flip = driver.find_element(by=By.CLASS_NAME, value='kOSkYZ')
                         flip.click()
+                        time.sleep(0.3)
                         value_flipped = float(
-                            driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[0].get_attribute('value'))
+                            driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[1].get_attribute('value'))
                         flip.click()
                         prices_of_coin.append([value, value2, value_flipped])
                     prices_of_coins.append(prices_of_coin)
                 else:
                     continue
-            print(f'[Marbledao: {datetime.datetime.now() - start}]')
             return prices_of_coins
 
     class Osmosis:
@@ -283,7 +305,6 @@ class getInfo:
                     driver.find_elements(by=By.CLASS_NAME, value='ml-3')]
 
         def get_prices(main_coin_id, values, add_coins):
-            start = datetime.datetime.now()
             # Configs
             path = driver_path
             driver = webdriver.Chrome(path)
@@ -319,7 +340,6 @@ class getInfo:
                     time.sleep(1)
                     flip.click()
                 prices_of_coins.append(prices_of_coin)
-            print(f'[Osmosis: {datetime.datetime.now() - start}]')
             return prices_of_coins
 
 
@@ -340,45 +360,63 @@ class getInfo:
 
 if __name__ == '__main__':
 
+    configs_data = pickle.load(open('configs.pickle', 'rb'))
+
+
     def save_junoswap():
         try:
-            data = getInfo.JunoSwap.get_prices(0, [80, 100], range(11))
+            start = datetime.datetime.now()
+            data = getInfo.JunoSwap.get_prices(configs_data['main_coin'], configs_data['values'],
+                                               configs_data['add_coins']['junoswap'])
             with open('junoswap.pickle', 'wb') as f:
                 pickle.dump(data, f)
-            print(f'[Junoswap is loaded]')
+            print(f'[Junoswap is loaded ({datetime.datetime.now() - start})]')
         except:
+            with open('junoswap.pickle', 'wb') as f:
+                pickle.dump(None, f)
             print(f'[Junoswap is not loaded!]')
 
 
     def save_sifchain():
         try:
-            data = getInfo.Sifchain.get_prices(0, [80, 100], range(11))
+            start = datetime.datetime.now()
+            data = getInfo.Sifchain.get_prices(configs_data['main_coin'], configs_data['values'],
+                                               configs_data['add_coins']['sifchain'])
             with open('sifchain.pickle', 'wb') as f:
                 pickle.dump(data, f)
-            print(f'[Sifchain is loaded]')
+            print(f'[Sifchain is loaded ({datetime.datetime.now() - start})]')
         except Exception as e:
+            with open('sifchain.pickle', 'wb') as f:
+                pickle.dump(None, f)
             print(str(e))
             print(f'[Sifchain is not loaded!]')
 
 
     def save_marbledao():
         try:
-            data = getInfo.Marbledao.get_prices(0, [80, 100], range(11))
+            start = datetime.datetime.now()
+            data = getInfo.Marbledao.get_prices(configs_data['main_coin'], configs_data['values'],
+                                                configs_data['add_coins']['marbledao'])
             with open('marbledao.pickle', 'wb') as f:
                 pickle.dump(data, f)
-            print(f'[Marbledao is loaded]')
+            print(f'[Marbledao is loaded ({datetime.datetime.now() - start})]')
         except Exception as e:
+            with open('marbledao.pickle', 'wb') as f:
+                pickle.dump(None, f)
             print(str(e))
             print(f'[Marbledao is not loaded!]')
 
 
     def save_osmosis():
         try:
-            data = getInfo.Osmosis.get_prices(0, [80, 100], range(11))
+            start = datetime.datetime.now()
+            data = getInfo.Osmosis.get_prices(0, configs_data['values'], range(11))
             with open('osmosis.pickle', 'wb') as f:
                 pickle.dump(data, f)
-            print(f'[Osmosis is loaded]')
+            print(f'[Osmosis is loaded ({datetime.datetime.now() - start})]')
         except:
+            with open('osmosis.pickle', 'wb') as f:
+                pickle.dump(None, f)
             print(f'[Osmosis is not loaded!]')
 
 

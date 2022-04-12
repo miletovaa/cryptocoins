@@ -1,24 +1,42 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
+from django.conf import settings
 import pickle
 from .coinsListReturn import CoinsListReturn
 
 
 class MainPageView(View):
     def get(self, request):
-        data = {
-            'junoswap': ['juno', 'atom', 'ust', 'btsg', 'luna', 'osmo', 'stars', 'huahua', 'akt', 'xprt', 'cmdx', 'dig',
-                         'scrt', 'neta', 'canlab', 'tuck', 'hulc', 'bcna', 'hope', 'rac', 'marble', 'coin', 'primo',
-                         'daisy', 'future', 'bfot', 'phmn', 'arto'],
-            'sifchain': ['rowan', '1inch', 'aave', 'akro', 'akt', 'ant', 'atom', 'axs', 'b20', 'bal', 'band', 'bat',
-                         'bnt', 'bond', 'btsg (erc-20)', 'cocos', 'comp', 'conv', 'cream', 'cro', 'csms', 'dai',
-                         'daofi', 'dfyn', 'dino', 'dnxc', 'don', 'dvpn', 'eeur', 'enj', 'ern', 'esd', 'eth', 'frax',
-                         'ftm', 'fxs', 'grt', 'iotx', 'iris', 'ixo', 'juno', 'keep', 'kft', 'ldo', 'leash', 'lgcy',
-                         'lina', 'link', 'lon', 'lrc', 'luna', 'mana', 'matic', 'metis', 'ngm', 'ocean', 'ogn', 'oh',
-                         'osmo', 'paid', 'pols', 'pond', 'quick', 'rail', 'ratom', 'reef', 'regen', 'rfuel', 'rly',
-                         'rndr', 'rune', 'saito', 'sand', 'shib', 'snx', 'srm', 'susd', 'sushi', 'sxp', 'tidal', 'toke',
-                         'tshp', 'tusd', 'ufo', 'uma', 'uni', 'usdc', 'usdt', 'ust', 'ust', 'wbtc', 'wfil', 'wscrt',
-                         'xprt', 'yfi', 'zcn', 'zcx', 'zrx'],
-            'marbledao': ['block', 'marble', 'juno', 'atom', 'ust', 'luna', 'osmo', 'scrt', 'neta']}
+        path = f'{settings.BASE_DIR}/main/coinsList.pickle'
+        data = pickle.load(open(path, 'rb'))
+        all_coins = []
+        for el in data:
+            all_coins += data[el]
+        data['all_coins'] = set(all_coins)
+        try:
+            data['configs'] = pickle.load(open(f'{settings.BASE_DIR}/main/configs.pickle', 'rb'))
 
+        except Exception as e:
+            print(str(e))
         return render(request, 'main/mainpage.html', data)
+
+    def post(self, request):
+        main_coin = request.POST['mainCoin']
+        values = [float(el) for el in request.POST['values'].split(' ') if el != '']
+        junoswap = request.POST.getlist('junoswap')
+        sifchain = request.POST.getlist('sifchain')
+        marbledao = request.POST.getlist('marbledao')
+        osmosis = request.POST.getlist('osmosis')
+        data = {
+            'main_coin': main_coin,
+            'values': values,
+            'add_coins': {
+                'junoswap': junoswap,
+                'sifchain': sifchain,
+                'marbledao': marbledao,
+                'osmosis': osmosis,
+            }
+        }
+        pickle.dump(data, open(f'{settings.BASE_DIR}/main/configs.pickle', 'wb'))
+
+        return redirect('/')
