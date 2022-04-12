@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import datetime, time, pickle
 from multiprocessing import Process
+import xlsx_writer
 
 junoswap_list = ['juno', 'atom', 'ust', 'btsg', 'luna', 'osmo', 'stars', 'huahua', 'akt', 'xprt', 'cmdx', 'dig', 'scrt',
                  'neta', 'canlab', 'tuck', 'hulc', 'bcna', 'hope', 'rac', 'marble', 'coin', 'primo', 'daisy', 'future',
@@ -115,7 +116,9 @@ class getInfo:
                                 'value')
                             flip.click()
 
-                            prices_of_coin.append([input_value, response_value, flipped_value])
+                            prices_of_coin.append([float(input_value) if input_value != '' else 0.0,
+                                                   float(response_value) if response_value != '' else 0.0,
+                                                   float(flipped_value) if flipped_value != '' else 0.0])
                         prices.append(prices_of_coin)
                     else:
                         continue
@@ -197,7 +200,9 @@ class getInfo:
                         response_flipped = driver.find_elements(by=By.CLASS_NAME, value='token-input')[1].get_attribute(
                             'value')
                         flip.click()
-                        prices_of_coin.append([float(el2), response, response_flipped])
+                        prices_of_coin.append(
+                            [float(el2) if el2 != '' else 0.0, float(response) if response != '' else 0.0,
+                             float(response_flipped) if response_flipped != '' else 0.0])
                     prices_of_coins.append(prices_of_coin)
                 else:
                     continue
@@ -279,7 +284,9 @@ class getInfo:
                         value_flipped = float(
                             driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[1].get_attribute('value'))
                         flip.click()
-                        prices_of_coin.append([value, value2, value_flipped])
+                        prices_of_coin.append(
+                            [float(value) if value != '' else 0.0, float(value2) if value2 != '' else 0.0,
+                             float(value_flipped) if value_flipped != '' else 0.0])
                     prices_of_coins.append(prices_of_coin)
                 else:
                     continue
@@ -336,7 +343,9 @@ class getInfo:
                     flip = driver.find_element(by=By.CLASS_NAME, value='css-1so39r0')
                     flip.click()
                     flipped_input = driver.find_elements(by=By.CLASS_NAME, value='css-1alvqnw')[0].text.split(' ')[1]
-                    prices_of_coin.append([el2, response_input, flipped_input])
+                    prices_of_coin.append(
+                        [float(el2) if el2 != '' else 0.0, float(response_input) if response_input != '' else 0.0,
+                         float(flipped_input) if flipped_input != '' else 0.0])
                     time.sleep(1)
                     flip.click()
                 prices_of_coins.append(prices_of_coin)
@@ -371,10 +380,10 @@ if __name__ == '__main__':
             with open('junoswap.pickle', 'wb') as f:
                 pickle.dump(data, f)
             print(f'[Junoswap is loaded ({datetime.datetime.now() - start})]')
-        except:
+        except Exception as e:
             with open('junoswap.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(f'[Junoswap is not loaded!]')
+            print(f'[Junoswap is not loaded! ({str(e)})]')
 
 
     def save_sifchain():
@@ -388,8 +397,7 @@ if __name__ == '__main__':
         except Exception as e:
             with open('sifchain.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(str(e))
-            print(f'[Sifchain is not loaded!]')
+            print(f'[Sifchain is not loaded! ({str(e)})]')
 
 
     def save_marbledao():
@@ -403,8 +411,7 @@ if __name__ == '__main__':
         except Exception as e:
             with open('marbledao.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(str(e))
-            print(f'[Marbledao is not loaded!]')
+            print(f'[Marbledao is not loaded! ({str(e)})]')
 
 
     def save_osmosis():
@@ -414,10 +421,10 @@ if __name__ == '__main__':
             with open('osmosis.pickle', 'wb') as f:
                 pickle.dump(data, f)
             print(f'[Osmosis is loaded ({datetime.datetime.now() - start})]')
-        except:
+        except Exception as e:
             with open('osmosis.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(f'[Osmosis is not loaded!]')
+            print(f'[Osmosis is not loaded! ({str(e)})]')
 
 
     junoswap = Process(target=save_junoswap)
@@ -428,6 +435,8 @@ if __name__ == '__main__':
     marbledao.start()
     osmosis = Process(target=save_osmosis)
     osmosis.start()
+
+    xlsx_writer.write()
 
     # data = {}
     # data['junoswap'] = getInfo.JunoSwap.get_prices(0, [80, 100], range(0, 20))
