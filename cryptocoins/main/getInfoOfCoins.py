@@ -33,6 +33,7 @@ def artificial_delay():
     pass
 
 
+
 class getInfo:
     class JunoSwap:
         def get_all_coins():
@@ -220,7 +221,6 @@ class getInfo:
                     prices_of_coins.append(prices_of_coin)
                 else:
                     continue
-            print(prices_of_coins)
             return prices_of_coins
 
     class Marbledao:
@@ -289,7 +289,7 @@ class getInfo:
                         mainCoinInput.send_keys(Keys.DELETE)
                         mainCoinInput.send_keys(str(el2))
 
-                        time.sleep(0.35)
+                        time.sleep(0.5)
                         artificial_delay()
 
                         addCoinInput = driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[1]
@@ -297,7 +297,7 @@ class getInfo:
                         value2 = float(addCoinInput.get_attribute('value'))
                         flip = driver.find_element(by=By.CLASS_NAME, value='kOSkYZ')
                         flip.click()
-                        time.sleep(0.3)
+                        time.sleep(0.5)
                         artificial_delay()
                         value_flipped = float(
                             driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[1].get_attribute('value'))
@@ -408,7 +408,6 @@ def save_sifchain():
         start = datetime.datetime.now()
         data = getInfo.Sifchain.get_prices(configs_data['main_coin'], configs_data['values'],
                                            configs_data['add_coins']['sifchain'])
-        print(data)
         with open('sifchain.pickle', 'wb') as f:
             pickle.dump(data, f)
         xlsx_writer.write()
@@ -426,6 +425,7 @@ def save_marbledao():
                                             configs_data['add_coins']['marbledao'])
         with open('marbledao.pickle', 'wb') as f:
             pickle.dump(data, f)
+        print(data)
         print(f'[Marbledao is loaded ({datetime.datetime.now() - start})]')
     except Exception as e:
         with open('marbledao.pickle', 'wb') as f:
