@@ -1,15 +1,41 @@
 import xlsxwriter
 from printInfo import get_prices
 import pickle
+import openpyxl
+
+
+def test():
+    wb = openpyxl.load_workbook('result.xlsx')
+    sheet = wb.active
+
+    # sheet.cell(row=3, column=1).value = ''
+
+    for i in range(1, 57):
+        for j in range(3, 43):
+            try:
+                sheet.cell(column=i, row=j).value = ''
+            except:
+                continue
+            # print(sheet.cell(column=i, row=j).value)
+
+    wb.save('result.xlsx')
+    # sheet = wb.sheet_by_index(0)
+    # print(sheet.cell_value(0, 0))
 
 
 def write():
-    workbook = xlsxwriter.Workbook('pricesOfCoins.xlsx')
-    worksheet = workbook.add_worksheet('Coins')
+    workbook = openpyxl.load_workbook('result.xlsx')
+    # worksheet = workbook.add_worksheet('Coins')
+    worksheet = workbook.active
+
+    for i in range(1, 57):
+        for j in range(3, 43):
+            try:
+                worksheet.cell(column=i, row=j).value = ''
+            except:
+                continue
 
     data = get_prices()
-
-    print(data)
 
     all_coins = []
     for el in data:
@@ -19,38 +45,47 @@ def write():
     all_coins = list(set(all_coins))
 
     for el in all_coins:
-        worksheet.write(all_coins.index(el) + 2, 0, el)
+        worksheet.cell(all_coins.index(el) + 3, 1).value = el.upper()
 
     configs = pickle.load(open('configs.pickle', 'rb'))
     for i in range(len(configs['values'])):
-        worksheet.merge_range(1, 10 * i + 2, 1, 10 * i + 6, str(configs['values'][i]))
+        worksheet.cell(row=3, column=i * 11 + 2).value = configs['values'][i]
 
-    for i in range(len(configs['values'])*2):
-        worksheet.write(0, 2+5*i, 'Osmosis')
-        worksheet.write(0, 3+5*i, 'Emeris')
-        worksheet.write(0, 4+5*i, 'Sifchain')
-        worksheet.write(0, 5+5*i, 'Junoswap')
-        worksheet.write(0, 6+5*i, 'Marbledao')
+    for i in range(3, 43):
+        try:
+            for j in range(len(configs['values'])):
+                worksheet.unmerge_cells(start_row=3, start_column=j * 11 + 2, end_row=i, end_column=j * 11 + 2)
+            break
+        except:
+            continue
+
+    for j in range(len(configs['values'])):
+        worksheet.merge_cells(start_row=3, start_column=j * 11 + 2, end_row=len(all_coins) + 2, end_column=j * 11 + 2)
+
+    # worksheet.merge_cells(start_row=3, start_column=2, end_row=6, end_column=2)
 
     if data['junoswap'] != None:
         for el in data['junoswap']:
             for i in range(1, len(el)):
-                worksheet.write(all_coins.index(el[0]) + 2, 10 * (i - 1) + 5, el[i][1])
-                worksheet.write(all_coins.index(el[0]) + 2, 10 * (i - 1) + 10, el[i][2])
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 6).value = el[i][1]
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 11).value = el[i][2]
     if data['sifchain'] != None:
         for el in data['sifchain']:
             for i in range(1, len(el)):
-                worksheet.write(all_coins.index(el[0]) + 2, 10 * (i - 1) + 4, el[i][1])
-                worksheet.write(all_coins.index(el[0]) + 2, 10 * (i - 1) + 9, el[i][2])
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 5).value = el[i][1]
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 10).value = el[i][2]
     if data['marbledao'] != None:
         for el in data['marbledao']:
             for i in range(1, len(el)):
-                worksheet.write(all_coins.index(el[0]) + 2, 10 * (i - 1) + 6, el[i][1])
-                worksheet.write(all_coins.index(el[0]) + 2, 10 * (i - 1) + 11, el[i][2])
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 7).value = el[i][1]
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 12).value = el[i][2]
     if data['osmosis'] != None:
         for el in data['osmosis']:
             for i in range(1, len(el)):
-                worksheet.write(all_coins.index(el[0]) + 2, 10 * (i - 1) + 2, el[i][1])
-                worksheet.write(all_coins.index(el[0]) + 2, 10 * (i - 1) + 7, el[i][2])
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 3).value = el[i][1]
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 8).value = el[i][2]
 
-    workbook.close()
+    workbook.save('result.xlsx')
+
+
+write()

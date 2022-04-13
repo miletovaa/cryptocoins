@@ -1,13 +1,24 @@
 from getInfoOfCoins import getInfo
 import pickle
 
-data = {
-    'junoswap': getInfo.JunoSwap.get_all_coins(),
-    'sifchain': getInfo.Sifchain.get_all_coins(),
-    'marbledao': getInfo.Marbledao.get_all_coins(),
-}
+data = {}
+try:
+    data['marbledao'] = getInfo.Marbledao.get_all_coins()
+except:
+    print(f'[Marbledao is not loaded!]')
 
 try:
+    data['sifchain'] = getInfo.Sifchain.get_all_coins()
+except:
+    print(f'[Sifchain is not loaded!]')
+
+try:
+    data['junoswap'] = getInfo.JunoSwap.get_all_coins()
+except:
+    print(f'[Junoswap is not loaded!]')
+
+try:
+    print(getInfo.Osmosis.get_all_coins())
     data['osmosis'] = getInfo.Osmosis.get_all_coins()
 except:
     print(f'[Osmosis is not loaded!]')

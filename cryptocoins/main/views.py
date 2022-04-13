@@ -18,6 +18,8 @@ class MainPageView(View):
 
         except Exception as e:
             print(str(e))
+
+        print(data)
         return render(request, 'main/mainpage.html', data)
 
     def post(self, request):
