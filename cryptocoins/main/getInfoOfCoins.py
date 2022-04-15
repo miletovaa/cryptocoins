@@ -111,7 +111,7 @@ class getInfo:
                             start = datetime.datetime.now()
                             mainCoinInput.send_keys(Keys.CONTROL + "a")
                             mainCoinInput.send_keys(Keys.DELETE)
-                            mainCoinInput.send_keys(str(el))
+                            mainCoinInput.send_keys(str(int(el)))
 
                             input_value = mainCoinInput.get_property('value')
                             time.sleep(0.4)
@@ -287,9 +287,9 @@ class getInfo:
                         mainCoinInput = driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[0]
                         mainCoinInput.send_keys(Keys.CONTROL + 'a')
                         mainCoinInput.send_keys(Keys.DELETE)
-                        mainCoinInput.send_keys(str(el2))
+                        mainCoinInput.send_keys(str(int(el2)))
 
-                        time.sleep(0.5)
+                        time.sleep(0.4)
                         artificial_delay()
 
                         addCoinInput = driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[1]
@@ -297,7 +297,7 @@ class getInfo:
                         value2 = float(addCoinInput.get_attribute('value'))
                         flip = driver.find_element(by=By.CLASS_NAME, value='kOSkYZ')
                         flip.click()
-                        time.sleep(0.5)
+                        time.sleep(0.4)
                         artificial_delay()
                         value_flipped = float(
                             driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[1].get_attribute('value'))
@@ -367,18 +367,17 @@ class getInfo:
                     main_coin_input.send_keys(Keys.CONTROL + 'a')
                     main_coin_input.send_keys(Keys.DELETE)
                     main_coin_input.send_keys(str(el2))
-                    time.sleep(0.5)
+                    time.sleep(0.4)
                     artificial_delay()
                     response_input = driver.find_elements(by=By.CLASS_NAME, value='css-1alvqnw')[0].text.split(' ')[1]
                     flip = driver.find_element(by=By.CLASS_NAME, value='css-1so39r0')
                     flip.click()
-                    time.sleep(0.5)
+                    time.sleep(0.4)
                     flipped_input = driver.find_elements(by=By.CLASS_NAME, value='css-1alvqnw')[0].text.split(' ')[1]
                     prices_of_coin.append(
                         [float(el2) if el2 != '' else 0.0,
                          float(response_input.replace(',', '')) if response_input != '' else 0.0,
                          float(flipped_input.replace(',', '')) if flipped_input != '' else 0.0])
-                    time.sleep(1)
                     artificial_delay()
                     flip.click()
                 prices_of_coins.append(prices_of_coin)
@@ -389,63 +388,67 @@ configs_data = pickle.load(open('configs.pickle', 'rb'))
 
 
 def save_junoswap():
-    try:
-        start = datetime.datetime.now()
-        data = getInfo.JunoSwap.get_prices(configs_data['main_coin'], configs_data['values'],
-                                           configs_data['add_coins']['junoswap'])
-        with open('junoswap.pickle', 'wb') as f:
-            pickle.dump(data, f)
-        xlsx_writer.write()
-        print(f'[Junoswap is loaded ({datetime.datetime.now() - start})]')
-    except Exception as e:
-        with open('junoswap.pickle', 'wb') as f:
-            pickle.dump(None, f)
-        print(f'[Junoswap is not loaded! ({str(e)})]')
+    while True:
+        try:
+            start = datetime.datetime.now()
+            data = getInfo.JunoSwap.get_prices(configs_data['main_coin'], configs_data['values'],
+                                            configs_data['add_coins']['junoswap'])
+            with open('junoswap.pickle', 'wb') as f:
+                pickle.dump(data, f)
+            xlsx_writer.write()
+            print(f'[Junoswap is loaded ({datetime.datetime.now() - start})]')
+        except Exception as e:
+            with open('junoswap.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Junoswap is not loaded! ({str(e)})]')
 
 
 def save_sifchain():
-    try:
-        start = datetime.datetime.now()
-        data = getInfo.Sifchain.get_prices(configs_data['main_coin'], configs_data['values'],
-                                           configs_data['add_coins']['sifchain'])
-        with open('sifchain.pickle', 'wb') as f:
-            pickle.dump(data, f)
-        xlsx_writer.write()
-        print(f'[Sifchain is loaded ({datetime.datetime.now() - start})]')
-    except Exception as e:
-        with open('sifchain.pickle', 'wb') as f:
-            pickle.dump(None, f)
-        print(f'[Sifchain is not loaded! ({str(e)})]')
+    while True:
+        try:
+            start = datetime.datetime.now()
+            data = getInfo.Sifchain.get_prices(configs_data['main_coin'], configs_data['values'],
+                                            configs_data['add_coins']['sifchain'])
+            with open('sifchain.pickle', 'wb') as f:
+                pickle.dump(data, f)
+            xlsx_writer.write()
+            print(f'[Sifchain is loaded ({datetime.datetime.now() - start})]')
+        except Exception as e:
+            with open('sifchain.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Sifchain is not loaded! ({str(e)})]')
 
 
 def save_marbledao():
-    try:
-        start = datetime.datetime.now()
-        data = getInfo.Marbledao.get_prices(configs_data['main_coin'], configs_data['values'],
-                                            configs_data['add_coins']['marbledao'])
-        with open('marbledao.pickle', 'wb') as f:
-            pickle.dump(data, f)
-        print(data)
-        print(f'[Marbledao is loaded ({datetime.datetime.now() - start})]')
-    except Exception as e:
-        with open('marbledao.pickle', 'wb') as f:
-            pickle.dump(None, f)
-        print(f'[Marbledao is not loaded! ({str(e)})]')
+    while True:
+        try:
+            start = datetime.datetime.now()
+            data = getInfo.Marbledao.get_prices(configs_data['main_coin'], configs_data['values'],
+                                                configs_data['add_coins']['marbledao'])
+            with open('marbledao.pickle', 'wb') as f:
+                pickle.dump(data, f)
+            print(data)
+            print(f'[Marbledao is loaded ({datetime.datetime.now() - start})]')
+        except Exception as e:
+            with open('marbledao.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Marbledao is not loaded! ({str(e)})]')
 
 
 def save_osmosis():
-    try:
-        start = datetime.datetime.now()
-        data = getInfo.Osmosis.get_prices(configs_data['main_coin'], configs_data['values'],
-                                          configs_data['add_coins']['osmosis'])
-        with open('osmosis.pickle', 'wb') as f:
-            pickle.dump(data, f)
-        xlsx_writer.write()
-        print(f'[Osmosis is loaded ({datetime.datetime.now() - start})]')
-    except Exception as e:
-        with open('osmosis.pickle', 'wb') as f:
-            pickle.dump(None, f)
-        print(f'[Osmosis is not loaded! ({str(e)})]')
+    while True:
+        try:
+            start = datetime.datetime.now()
+            data = getInfo.Osmosis.get_prices(configs_data['main_coin'], configs_data['values'],
+                                            configs_data['add_coins']['osmosis'])
+            with open('osmosis.pickle', 'wb') as f:
+                pickle.dump(data, f)
+            xlsx_writer.write()
+            print(f'[Osmosis is loaded ({datetime.datetime.now() - start})]')
+        except Exception as e:
+            with open('osmosis.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Osmosis is not loaded! ({str(e)})]')
 
 
 if __name__ == '__main__':
