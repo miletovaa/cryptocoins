@@ -1,4 +1,3 @@
-import xlsxwriter
 from printInfo import get_prices
 import pickle
 import openpyxl

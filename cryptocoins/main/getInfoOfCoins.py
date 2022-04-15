@@ -4,26 +4,7 @@ from selenium.webdriver.common.keys import Keys
 import datetime, time, pickle
 from multiprocessing import Process
 import xlsx_writer
-
-junoswap_list = ['juno', 'atom', 'ust', 'btsg', 'luna', 'osmo', 'stars', 'huahua', 'akt', 'xprt', 'cmdx', 'dig', 'scrt',
-                 'neta', 'canlab', 'tuck', 'hulc', 'bcna', 'hope', 'rac', 'marble', 'coin', 'primo', 'daisy', 'future',
-                 'bfot', 'phmn', 'arto']
-
-osmosis_list = ['atom', 'ion', 'akt', 'dvpn', 'iris', 'cro', 'xprt', 'regen', 'iov', 'ngm', 'eeur', 'juno', 'like',
-                'ixo', 'ust', 'luna', 'bcna', 'btsg', 'xki', 'scrt', 'med', 'boot', 'cmdx', 'cheq', 'stars', 'huahua',
-                'lum', 'vdl', 'dsm', 'dig', 'grav', 'somm', 'rowan', 'band', 'darc', 'neta', 'umee', 'dec', 'pstake',
-                'marble', 'swth']
-
-marbledao_list = ['block', 'marble', 'juno', 'atom', 'ust', 'luna', 'osmo', 'scrt', 'neta']
-
-sifchain_list = ['rowan', '1inch', 'aave', 'akro', 'akt', 'ant', 'atom', 'axs', 'b20', 'bal', 'band', 'bat', 'bnt',
-                 'bond', 'btsg (erc-20)', 'cocos', 'comp', 'conv', 'cream', 'cro', 'csms', 'dai', 'daofi', 'dfyn',
-                 'dino', 'dnxc', 'don', 'dvpn', 'eeur', 'enj', 'ern', 'esd', 'eth', 'frax', 'ftm', 'fxs', 'grt', 'iotx',
-                 'iris', 'ixo', 'juno', 'keep', 'kft', 'ldo', 'leash', 'lgcy', 'lina', 'link', 'lon', 'lrc', 'luna',
-                 'mana', 'matic', 'metis', 'ngm', 'ocean', 'ogn', 'oh', 'osmo', 'paid', 'pols', 'pond', 'quick', 'rail',
-                 'ratom', 'reef', 'regen', 'rfuel', 'rly', 'rndr', 'rune', 'saito', 'sand', 'shib', 'snx', 'srm',
-                 'susd', 'sushi', 'sxp', 'tidal', 'toke', 'tshp', 'tusd', 'ufo', 'uma', 'uni', 'usdc', 'usdt', 'ust',
-                 'ust', 'wbtc', 'wfil', 'wscrt', 'xprt', 'yfi', 'zcn', 'zcx', 'zrx']
+from getY1 import send_message
 
 driver_path = './chromedriver'
 
@@ -31,7 +12,6 @@ driver_path = './chromedriver'
 def artificial_delay():
     # time.sleep(2)
     pass
-
 
 
 class getInfo:
@@ -392,11 +372,12 @@ def save_junoswap():
         try:
             start = datetime.datetime.now()
             data = getInfo.JunoSwap.get_prices(configs_data['main_coin'], configs_data['values'],
-                                            configs_data['add_coins']['junoswap'])
+                                               configs_data['add_coins']['junoswap'])
             with open('junoswap.pickle', 'wb') as f:
                 pickle.dump(data, f)
             xlsx_writer.write()
             print(f'[Junoswap is loaded ({datetime.datetime.now() - start})]')
+            send_message()
         except Exception as e:
             with open('junoswap.pickle', 'wb') as f:
                 pickle.dump(None, f)
@@ -408,11 +389,12 @@ def save_sifchain():
         try:
             start = datetime.datetime.now()
             data = getInfo.Sifchain.get_prices(configs_data['main_coin'], configs_data['values'],
-                                            configs_data['add_coins']['sifchain'])
+                                               configs_data['add_coins']['sifchain'])
             with open('sifchain.pickle', 'wb') as f:
                 pickle.dump(data, f)
             xlsx_writer.write()
             print(f'[Sifchain is loaded ({datetime.datetime.now() - start})]')
+            send_message()
         except Exception as e:
             with open('sifchain.pickle', 'wb') as f:
                 pickle.dump(None, f)
@@ -429,6 +411,7 @@ def save_marbledao():
                 pickle.dump(data, f)
             print(data)
             print(f'[Marbledao is loaded ({datetime.datetime.now() - start})]')
+            send_message()
         except Exception as e:
             with open('marbledao.pickle', 'wb') as f:
                 pickle.dump(None, f)
@@ -440,11 +423,12 @@ def save_osmosis():
         try:
             start = datetime.datetime.now()
             data = getInfo.Osmosis.get_prices(configs_data['main_coin'], configs_data['values'],
-                                            configs_data['add_coins']['osmosis'])
+                                              configs_data['add_coins']['osmosis'])
             with open('osmosis.pickle', 'wb') as f:
                 pickle.dump(data, f)
             xlsx_writer.write()
             print(f'[Osmosis is loaded ({datetime.datetime.now() - start})]')
+            send_message()
         except Exception as e:
             with open('osmosis.pickle', 'wb') as f:
                 pickle.dump(None, f)
