@@ -306,8 +306,11 @@ class getInfo:
 
             driver.find_elements(by=By.CLASS_NAME, value='css-1de6nk0')[0].click()
 
+            print([el.find_element(by=By.TAG_NAME, value='h5').text.lower() for el in
+                    driver.find_elements(by=By.CLASS_NAME, value='ml-3')]+['osmo'])
+
             return [el.find_element(by=By.TAG_NAME, value='h5').text.lower() for el in
-                    driver.find_elements(by=By.CLASS_NAME, value='ml-3')].append('osmo')
+                    driver.find_elements(by=By.CLASS_NAME, value='ml-3')]+['osmo']
 
         def get_prices(main_coin, values, add_coins_names):
             # Configs
