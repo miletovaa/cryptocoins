@@ -3,6 +3,7 @@ import openpyxl
 
 BOT_TOKEN = '5397252848:AAHg9ZE9HLBflvI-uAUWGgDHFYVk46dr-ng'
 CHANNEL_NAME = '@cryptocoinstest'
+CHANNEL_ID = '-1001635996486'
 
 
 def send_message():
@@ -12,4 +13,4 @@ def send_message():
 
     bot = telebot.TeleBot(BOT_TOKEN)
     if data != None:
-        bot.send_message(CHANNEL_NAME, str(data))
+        bot.send_message(chat_id=CHANNEL_ID, text=str(data))
