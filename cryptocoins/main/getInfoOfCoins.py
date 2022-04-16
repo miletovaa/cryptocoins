@@ -223,7 +223,6 @@ class getInfo:
             return coins
 
         def get_prices(main_coin, values, add_coins_names):
-            allCoins = marbledao_list
 
             # Configs
             path = driver_path
@@ -261,7 +260,7 @@ class getInfo:
                                                                                           value='c-dOfGRD-ihyvuql-css')[
                     ::2][el].click()
 
-                    prices_of_coin = [allCoins[el]]
+                    prices_of_coin = [all_coins_names[el]]
                     # Loop
                     for el2 in values:
                         mainCoinInput = driver.find_elements(by=By.CLASS_NAME, value='c-GGohk')[0]
