@@ -1,9 +1,8 @@
 import telebot
 import openpyxl
 
-BOT_TOKEN = '5397252848:AAHg9ZE9HLBflvI-uAUWGgDHFYVk46dr-ng'
-CHANNEL_NAME = '@cryptocoinstest'
-CHANNEL_ID = '-1001635996486'
+BOT_TOKEN = '5187298061:AAH8PJ0VRfbQkpiOmFUQ-1kroZqkCM4a24I'
+CHANNEL_ID = '-1001261505666'
 
 
 def send_message():
