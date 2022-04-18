@@ -1,25 +1,22 @@
+import time
 from printInfo import get_prices
 import pickle
 import openpyxl
+import subprocess
+from getY1 import send_message
 
 
-def test():
-    wb = openpyxl.load_workbook('result.xlsx')
-    sheet = wb.active
-
-    # sheet.cell(row=3, column=1).value = ''
-
-    for i in range(1, 57):
-        for j in range(3, 43):
-            try:
-                sheet.cell(column=i, row=j).value = ''
-            except:
-                continue
-            # print(sheet.cell(column=i, row=j).value)
-
-    wb.save('result.xlsx')
-    # sheet = wb.sheet_by_index(0)
-    # print(sheet.cell_value(0, 0))
+def save_xlsx_file():
+    subprocess.Popen(['libreoffice', '--calc', './result.xlsx'])
+    time.sleep(1)
+    subprocess.Popen(['xdotool', 'key', 'ctrl+s'])
+    time.sleep(0.5)
+    subprocess.Popen(['xdotool', 'key', 'Return'])
+    time.sleep(0.5)
+    subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
+    time.sleep(0.5)
+    subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
+    print('[Saved]')
 
 
 def write():
@@ -85,5 +82,6 @@ def write():
 
     workbook.save('result.xlsx')
 
+    save_xlsx_file()
 
-write()
+    send_message()

@@ -10,6 +10,7 @@ class MainPageView(View):
         path = f'{settings.BASE_DIR}/main/coinsList.pickle'
         data = pickle.load(open(path, 'rb'))
         all_coins = []
+
         for el in data:
             all_coins += data[el]
         data['all_coins'] = set(all_coins)
