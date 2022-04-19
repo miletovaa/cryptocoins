@@ -17,6 +17,3 @@ def send_message():
         requests.get(
             f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHANNEL_ID}&text=(TEST) {str(data)}')
 
-
-requests.get(
-    f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHANNEL_ID}&text={"The service is stopped for a while"}')
