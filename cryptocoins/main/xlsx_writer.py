@@ -8,7 +8,7 @@ from getY1 import send_message
 
 def save_xlsx_file():
     subprocess.Popen(['libreoffice', '--calc', './result.xlsx'])
-    time.sleep(1)
+    time.sleep(5)
     subprocess.Popen(['xdotool', 'key', 'ctrl+s'])
     time.sleep(0.5)
     subprocess.Popen(['xdotool', 'key', 'Return'])
