@@ -57,6 +57,7 @@ class getInfo:
             driver = webdriver.Chrome(path, chrome_options=chrome_options)
             url = "https://junoswap.com/"
             driver.get(url)
+            time.sleep(1)
 
             # Open list to choose main coin
             driver.find_element(by=By.CLASS_NAME, value='c-fkNNfJ-cjOYsE-state-selected').click()

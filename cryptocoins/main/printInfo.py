@@ -36,5 +36,3 @@ def get_prices():
         data['osmosis'] = None
         print(f'[Osmosis is not loaded!]')
     return data
-
-print(get_prices())
