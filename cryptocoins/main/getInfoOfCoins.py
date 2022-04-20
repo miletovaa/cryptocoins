@@ -367,7 +367,7 @@ configs_data = pickle.load(open('configs.pickle', 'rb'))
 
 
 def save_junoswap():
-    if configs_data['add_coins']['junoswap'] != []:
+    if configs_data['add_coins']['junoswap']:
         try:
             start = datetime.datetime.now()
             data = getInfo.JunoSwap.get_prices(configs_data['main_coin'], configs_data['values'],
@@ -387,7 +387,7 @@ def save_junoswap():
 
 
 def save_sifchain():
-    if configs_data['add_coins']['sifchain'] != []:
+    if configs_data['add_coins']['sifchain']:
         try:
             start = datetime.datetime.now()
             data = getInfo.Sifchain.get_prices(configs_data['main_coin'], configs_data['values'],
@@ -407,7 +407,7 @@ def save_sifchain():
 
 
 def save_marbledao():
-    if configs_data['add_coins']['marbledao'] != []:
+    if configs_data['add_coins']['marbledao']:
         try:
             start = datetime.datetime.now()
             data = getInfo.Marbledao.get_prices(configs_data['main_coin'], configs_data['values'],
@@ -426,7 +426,7 @@ def save_marbledao():
 
 
 def save_osmosis():
-    if configs_data['add_coins']['osmosis'] != []:  
+    if configs_data['add_coins']['osmosis']:
         try:
             start = datetime.datetime.now()
             data = getInfo.Osmosis.get_prices(configs_data['main_coin'], configs_data['values'],
