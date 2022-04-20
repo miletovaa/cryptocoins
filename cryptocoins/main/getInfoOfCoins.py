@@ -367,8 +367,8 @@ configs_data = pickle.load(open('configs.pickle', 'rb'))
 
 
 def save_junoswap():
-    try:
-        if configs_data['add_coins']['junoswap'] != []:
+    if configs_data['add_coins']['junoswap'] != []:
+        try:
             start = datetime.datetime.now()
             data = getInfo.JunoSwap.get_prices(configs_data['main_coin'], configs_data['values'],
                                                configs_data['add_coins']['junoswap'])
@@ -377,15 +377,18 @@ def save_junoswap():
             # xlsx_writer.write()
             print(f'[Junoswap is loaded ({datetime.datetime.now() - start})]')
             # send_message()
-    except Exception as e:
+        except Exception as e:
+            with open('junoswap.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Junoswap is not loaded! ({str(e)})]')
+    else:
         with open('junoswap.pickle', 'wb') as f:
             pickle.dump(None, f)
-        print(f'[Junoswap is not loaded! ({str(e)})]')
 
 
 def save_sifchain():
-    try:
-        if configs_data['add_coins']['sifchain'] != []:
+    if configs_data['add_coins']['sifchain'] != []:
+        try:
             start = datetime.datetime.now()
             data = getInfo.Sifchain.get_prices(configs_data['main_coin'], configs_data['values'],
                                                configs_data['add_coins']['sifchain'])
@@ -394,32 +397,37 @@ def save_sifchain():
             # xlsx_writer.write()
             print(f'[Sifchain is loaded ({datetime.datetime.now() - start})]')
             # send_message()
-    except Exception as e:
+        except Exception as e:
+            with open('sifchain.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Sifchain is not loaded! ({str(e)})]')
+    else:
         with open('sifchain.pickle', 'wb') as f:
             pickle.dump(None, f)
-        print(f'[Sifchain is not loaded! ({str(e)})]')
 
 
 def save_marbledao():
-    try:
-        if configs_data['add_coins']['marbledao'] != []:
+    if configs_data['add_coins']['marbledao'] != []:
+        try:
             start = datetime.datetime.now()
             data = getInfo.Marbledao.get_prices(configs_data['main_coin'], configs_data['values'],
                                                 configs_data['add_coins']['marbledao'])
             with open('marbledao.pickle', 'wb') as f:
                 pickle.dump(data, f)
-            # print(data)
             print(f'[Marbledao is loaded ({datetime.datetime.now() - start})]')
             # send_message()
-    except Exception as e:
+        except Exception as e:
+            with open('marbledao.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Marbledao is not loaded! ({str(e)})]')
+    else:
         with open('marbledao.pickle', 'wb') as f:
             pickle.dump(None, f)
-        print(f'[Marbledao is not loaded! ({str(e)})]')
 
 
 def save_osmosis():
-    try:
-        if configs_data['add_coins']['osmosis'] != []:
+    if configs_data['add_coins']['osmosis'] != []:  
+        try:
             start = datetime.datetime.now()
             data = getInfo.Osmosis.get_prices(configs_data['main_coin'], configs_data['values'],
                                               configs_data['add_coins']['osmosis'])
@@ -428,10 +436,13 @@ def save_osmosis():
             # xlsx_writer.write()
             print(f'[Osmosis is loaded ({datetime.datetime.now() - start})]')
             # send_message()
-    except Exception as e:
+        except Exception as e:
+            with open('osmosis.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Osmosis is not loaded! ({str(e)})]')
+    else:
         with open('osmosis.pickle', 'wb') as f:
             pickle.dump(None, f)
-        print(f'[Osmosis is not loaded! ({str(e)})]')
 
 
 def main():
