@@ -17,6 +17,8 @@ def artificial_delay():
 chrome_options = Options()
 # chrome_options.add_argument('--headless')
 chrome_options.add_argument('--no-sandbox')
+
+
 # chrome_options.add_argument('--disable-dev-shm-usage')
 
 
@@ -363,6 +365,61 @@ class getInfo:
                 prices_of_coins.append(prices_of_coin)
             return prices_of_coins
 
+    class Crescent:
+        def get_all_coins():
+            # Configs
+            path = driver_path
+            driver = webdriver.Chrome(path, chrome_options=chrome_options)
+            url = "https://app.crescent.network/swap"
+            driver.get(url)
+            time.sleep(0.5)
+            artificial_delay()
+
+            driver.find_elements(by=By.CLASS_NAME, value='text-yellowCRE-200')[4].click()
+            driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[3].click()
+
+            # Click to view list of coins
+            driver.find_elements(by=By.CLASS_NAME, value='text-blackCRE')[5].click()
+            time.sleep(0.2)
+            return [el.text.lower() for el in driver.find_elements(by=By.CLASS_NAME, value='sBOLD18')]
+
+        def get_prices(main_coin, values, add_coins_names):
+            path = driver_path
+            driver = webdriver.Chrome(path, chrome_options=chrome_options)
+            url = "https://app.crescent.network/swap"
+            driver.get(url)
+            time.sleep(0.5)
+            artificial_delay()
+
+            driver.find_elements(by=By.CLASS_NAME, value='text-yellowCRE-200')[4].click()
+            driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[3].click()
+
+            # Click to view list of coins
+            driver.find_elements(by=By.CLASS_NAME, value='text-blackCRE')[5].click()
+
+            main_coin_el = \
+            [el for el in driver.find_elements(by=By.CLASS_NAME, value='sBOLD18') if el.text.lower() == main_coin][0]
+            main_coin_el.click()
+            driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[1].click()
+
+            time.sleep(0.1)
+
+            add_coins_el = [el for el in driver.find_elements(by=By.CLASS_NAME, value='sBOLD18') if
+                            el.text.lower() in add_coins_names]
+
+            add_coins_el[0].click()
+            driver.find_elements(by=By.CLASS_NAME, value='text-blackCRE')[8].click()
+            time.sleep(0.1)
+            add_coins_el[1].click()
+
+            # # Loop
+            # for el in add_coins_el:
+            #     el.click()
+            #     time.sleep(10000)
+            #     driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[1].click()
+
+            time.sleep(1000000)
+
 
 configs_data = pickle.load(open('configs.pickle', 'rb'))
 
@@ -464,5 +521,9 @@ def main():
         xlsx_writer.write()
 
 
-if __name__ == '__main__':
-    main()
+#
+# if __name__ == '__main__':
+#     main()
+
+# print(getInfo.Crescent.get_all_coins())
+getInfo.Crescent.get_prices('atom', [80], ['ust', 'luna'])
