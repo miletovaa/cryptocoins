@@ -77,6 +77,11 @@ def write():
             for i in range(1, len(el)):
                 worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 7).value = el[i][1] if el[i][1] != 0 else ''
                 worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 12).value = el[i][2] if el[i][2] != 0 else ''
+    if data['crescent']:
+        for el in data['crescent']:
+            for i in range(1, len(el)):
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 4).value = el[i][1] if el[i][1] != 0 else ''
+                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 9).value = el[i][2] if el[i][2] != 0 else ''
     if data['osmosis']:
         for el in data['osmosis']:
             for i in range(1, len(el)):

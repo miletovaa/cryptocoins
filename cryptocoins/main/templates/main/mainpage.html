@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Crypto coins</title>
 </head>
-<body style="display: flex; justify-content: center; align-items: center; height: 100vh; padding: 0; margin: 0">
+<body style="display: flex; justify-content: flex-start; align-items: center; height: 100vh; padding: 20px; margin: 0">
 <form method="POST"
       style="display: flex; justify-content: center; align-items: center; height: 100vh; padding: 0; margin: 0; flex-direction: column">
 
@@ -30,12 +30,13 @@
             <h1>Values</h1>
             <input value="{% for el in configs.values %}{{ el }} {% endfor %}" name="values" type="text">
         </label>
-    
+
         <label style="text-align: center">
             <h1>Junoswap</h1>
             <select style="width: 250px; height: 70vh" multiple name="junoswap">
                 {% for el in junoswap %}
-                    <option {% if el in configs.add_coins.junoswap %}selected{% endif %} value="{{ el }}">{{ el }}</option>
+                    <option {% if el in configs.add_coins.junoswap %}selected{% endif %}
+                            value="{{ el }}">{{ el }}</option>
                 {% endfor %}
             </select>
         </label>
@@ -43,7 +44,8 @@
             <h1>Sifchain</h1>
             <select style="width: 250px; height: 70vh" multiple name="sifchain">
                 {% for el in sifchain %}
-                    <option {% if el in configs.add_coins.sifchain %}selected{% endif %} value="{{ el }}">{{ el }}</option>
+                    <option {% if el in configs.add_coins.sifchain %}selected{% endif %}
+                            value="{{ el }}">{{ el }}</option>
                 {% endfor %}
             </select>
         </label>
@@ -51,7 +53,8 @@
             <h1>Marbledao</h1>
             <select style="width: 250px; height: 70vh" multiple name="marbledao">
                 {% for el in marbledao %}
-                    <option {% if el in configs.add_coins.marbledao %}selected{% endif %} value="{{ el }}">{{ el }}</option>
+                    <option {% if el in configs.add_coins.marbledao %}selected{% endif %}
+                            value="{{ el }}">{{ el }}</option>
                 {% endfor %}
             </select>
         </label>
@@ -59,7 +62,17 @@
             <h1>Osmosis</h1>
             <select style="width: 250px; height: 70vh" multiple name="osmosis">
                 {% for el in osmosis %}
-                    <option {% if el in configs.add_coins.osmosis %}selected{% endif %} value="{{ el }}">{{ el }}</option>
+                    <option {% if el in configs.add_coins.osmosis %}selected{% endif %}
+                            value="{{ el }}">{{ el }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label style="text-align: center">
+            <h1>Crescent</h1>
+            <select style="width: 250px; height: 70vh" multiple name="crescent">
+                {% for el in crescent %}
+                    <option {% if el in configs.add_coins.crescent %}selected{% endif %}
+                            value="{{ el }}">{{ el }}</option>
                 {% endfor %}
             </select>
         </label>

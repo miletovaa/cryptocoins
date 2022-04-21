@@ -352,16 +352,16 @@ class getInfo:
                     time.sleep(0.4)
                     artificial_delay()
                     response_input = driver.find_elements(by=By.CLASS_NAME, value='css-1alvqnw')[0].text.split(' ')[1]
-                    flip = driver.find_element(by=By.CLASS_NAME, value='css-1so39r0')
-                    flip.click()
-                    time.sleep(0.4)
-                    flipped_input = driver.find_elements(by=By.CLASS_NAME, value='css-1alvqnw')[0].text.split(' ')[1]
+                    # flip = driver.find_element(by=By.CLASS_NAME, value='css-1so39r0')
+                    # flip.click()
+                    # time.sleep(0.4)
+                    # flipped_input = driver.find_elements(by=By.CLASS_NAME, value='css-1alvqnw')[0].text.split(' ')[1]
                     prices_of_coin.append(
                         [float(el2) if el2 != '' else 0.0,
                          float(response_input.replace(',', '')) if response_input != '' else 0.0,
-                         float(flipped_input.replace(',', '')) if flipped_input != '' else 0.0])
+                         0.0])
                     artificial_delay()
-                    flip.click()
+                    # flip.click()
                 prices_of_coins.append(prices_of_coin)
             return prices_of_coins
 
@@ -398,27 +398,47 @@ class getInfo:
             driver.find_elements(by=By.CLASS_NAME, value='text-blackCRE')[5].click()
 
             main_coin_el = \
-            [el for el in driver.find_elements(by=By.CLASS_NAME, value='sBOLD18') if el.text.lower() == main_coin][0]
+                [el for el in driver.find_elements(by=By.CLASS_NAME, value='sBOLD18') if el.text.lower() == main_coin][
+                    0]
+            # Click to main coin element
             main_coin_el.click()
+
+            # Click to view all list if addiction coins
             driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[1].click()
-
             time.sleep(0.1)
-
             add_coins_el = [el for el in driver.find_elements(by=By.CLASS_NAME, value='sBOLD18') if
                             el.text.lower() in add_coins_names]
-
+            # Choose the first addiction coin
             add_coins_el[0].click()
-            driver.find_elements(by=By.CLASS_NAME, value='text-blackCRE')[8].click()
-            time.sleep(0.1)
-            add_coins_el[1].click()
 
-            # # Loop
-            # for el in add_coins_el:
-            #     el.click()
-            #     time.sleep(10000)
-            #     driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[1].click()
+            prices_of_coins = []
 
-            time.sleep(1000000)
+            for el in add_coins_names:
+                if el != main_coin:
+                    prices_of_coin = [el, ]
+                    driver.find_elements(by=By.CLASS_NAME, value='text-blackCRE')[8].click()
+                    time.sleep(2)
+                    add_coins_el = driver.find_elements(by=By.CLASS_NAME, value='sBOLD18')
+                    all_add_coins_names = [el.text.lower() for el in add_coins_el]
+                    add_coins_el[all_add_coins_names.index(el)].click()
+
+                    main_coin_input = driver.find_elements(by=By.TAG_NAME, value='input')[0]
+
+                    for el2 in values:
+                        main_coin_input.send_keys(Keys.CONTROL + 'a')
+                        main_coin_input.send_keys(Keys.DELETE)
+                        main_coin_input.send_keys(str(el2))
+                        time.sleep(0.25)
+                        response = driver.find_elements(by=By.TAG_NAME, value='input')[1].get_attribute('value')
+
+                        flip = driver.find_elements(by=By.TAG_NAME, value='button')[5]
+                        flip.click()
+                        time.sleep(0.25)
+                        response_flipped = driver.find_elements(by=By.TAG_NAME, value='input')[1].get_attribute('value')
+                        prices_of_coin.append([el2, response, response_flipped])
+                        flip.click()
+                    prices_of_coins.append(prices_of_coin)
+            return prices_of_coins
 
 
 configs_data = pickle.load(open('configs.pickle', 'rb'))
@@ -503,27 +523,47 @@ def save_osmosis():
             pickle.dump(None, f)
 
 
+def save_crescent():
+    if configs_data['add_coins']['crescent']:
+        try:
+            start = datetime.datetime.now()
+            data = getInfo.Crescent.get_prices(configs_data['main_coin'], configs_data['values'],
+                                               configs_data['add_coins']['crescent'])
+            print(data)
+            with open('crescent.pickle', 'wb') as f:
+                pickle.dump(data, f)
+            # xlsx_writer.write()
+            print(f'[Crescent is loaded ({datetime.datetime.now() - start})]')
+            # send_message()
+        except Exception as e:
+            with open('crescent.pickle', 'wb') as f:
+                pickle.dump(None, f)
+            print(f'[Crescent is not loaded! ({str(e)})]')
+    else:
+        with open('crescent.pickle', 'wb') as f:
+            pickle.dump(None, f)
+
+
 def main():
     while True:
         junoswap = Process(target=save_junoswap)
         junoswap.start()
+        crescent = Process(target=save_crescent)
+        crescent.start()
         sifchain = Process(target=save_sifchain)
         sifchain.start()
         marbledao = Process(target=save_marbledao)
         marbledao.start()
         osmosis = Process(target=save_osmosis)
-        osmosis.start()
         junoswap.join()
+        crescent.join()
         sifchain.join()
         marbledao.join()
+        osmosis.start()
         osmosis.join()
         print('[Saving...]')
         xlsx_writer.write()
 
 
-#
-# if __name__ == '__main__':
-#     main()
-
-# print(getInfo.Crescent.get_all_coins())
-getInfo.Crescent.get_prices('atom', [80], ['ust', 'luna'])
+if __name__ == '__main__':
+    main()

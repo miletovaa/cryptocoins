@@ -18,9 +18,13 @@ except:
     print(f'[Junoswap is not loaded!]')
 
 try:
-    print(getInfo.Osmosis.get_all_coins())
     data['osmosis'] = getInfo.Osmosis.get_all_coins()
 except:
     print(f'[Osmosis is not loaded!]')
+
+try:
+    data['crescent'] = getInfo.Crescent.get_all_coins()
+except:
+    print(f'[Crescent is not loaded!]')
 with open('coinsList.pickle', 'wb') as f:
     pickle.dump(data, f)

@@ -35,4 +35,12 @@ def get_prices():
     except:
         data['osmosis'] = None
         print(f'[Osmosis is not loaded!]')
+    try:
+        with open('crescent.pickle', 'rb') as f:
+            data['crescent'] = pickle.load(f)
+            # print(data['osmosis'])
+            # print(f'\n')
+    except:
+        data['crescent'] = None
+        print(f'[Crescent is not loaded!]')
     return data

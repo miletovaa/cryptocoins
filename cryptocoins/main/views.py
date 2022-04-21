@@ -30,6 +30,7 @@ class MainPageView(View):
         sifchain = request.POST.getlist('sifchain')
         marbledao = request.POST.getlist('marbledao')
         osmosis = request.POST.getlist('osmosis')
+        crescent = request.POST.getlist('crescent')
         data = {
             'main_coin': main_coin,
             'values': values,
@@ -38,6 +39,7 @@ class MainPageView(View):
                 'sifchain': sifchain,
                 'marbledao': marbledao,
                 'osmosis': osmosis,
+                'crescent': crescent
             }
         }
         pickle.dump(data, open(f'{settings.BASE_DIR}/main/configs.pickle', 'wb'))
