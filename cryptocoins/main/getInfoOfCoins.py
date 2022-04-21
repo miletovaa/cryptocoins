@@ -135,15 +135,9 @@ class getInfo:
             artificial_delay()
 
             # Click on button of all coins
-            driver.find_elements(by=By.TAG_NAME, value='button')[7].click()
-
+            driver.find_elements(by=By.TAG_NAME, value='button')[9].click()
             return [el.text.split('\n')[0].lower() for el in
                     driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
-            # # Click on button of all addiction coins
-            # driver.find_elements(by=By.TAG_NAME, value='button')[10].click()
-
-            # # # Click on button to swipe coins
-            # driver.find_elements(by=By.TAG_NAME, value='button')[9].click()
 
         def get_prices(main_coin, values, add_coins_names):
             # Configs
@@ -151,11 +145,11 @@ class getInfo:
             driver = webdriver.Chrome(path, chrome_options=chrome_options)
             url = "https://sifchain-dex.forbole.com/#/swap?from=uatom&to=rowan&slippage=1.0"
             driver.get(url)
-            time.sleep(3)
+            time.sleep(5)
             artificial_delay()
 
             # Click on button of all coins
-            driver.find_elements(by=By.TAG_NAME, value='button')[7].click()
+            driver.find_elements(by=By.TAG_NAME, value='button')[6].click()
             all_coins = [el.text.split('\n')[0].lower() for el in
                          driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
             main_coin_id = all_coins.index(main_coin)
@@ -166,39 +160,39 @@ class getInfo:
                 except:
                     continue
             driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[main_coin_id].click()
-            # print(driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[main_coin_id].text)
-
-            # driver.find_elements(by=By.CLASS_NAME, value='token-input')[1].send_keys('100')
-            # driver.find_elements(by=By.CLASS_NAME, value='token-input')[3].get_attribute('value')
 
             prices_of_coins = []
             for el in add_coins:
                 prices_of_coin = [all_coins[el]]
                 if main_coin_id != el:
                     # Click on button of all addiction coins
-                    driver.find_elements(by=By.TAG_NAME, value='button')[10].click()
+                    driver.find_elements(by=By.TAG_NAME, value='button')[9].click()
                     driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[el].click()
                     for el2 in values:
                         mainCoinInput = driver.find_elements(by=By.CLASS_NAME, value='token-input')[1]
                         mainCoinInput.send_keys(Keys.CONTROL + 'a')
                         mainCoinInput.send_keys(Keys.DELETE)
                         mainCoinInput.send_keys(str(el2))
-                        time.sleep(0.3)
+                        time.sleep(2)
                         # print(driver.find_elements(by=By.CLASS_NAME, value='token-input')[3].get_attribute('value'))
                         response = driver.find_elements(by=By.CLASS_NAME, value='token-input')[3].get_attribute('value')
+                        provider = driver.find_elements(by=By.CLASS_NAME, value='text-md')[11].text
 
                         # Click on button to swipe coins
-                        flip = driver.find_elements(by=By.TAG_NAME, value='button')[9]
+                        flip = driver.find_elements(by=By.TAG_NAME, value='button')[8]
                         flip.click()
 
-                        time.sleep(0.3)
-                        artificial_delay()
-                        response_flipped = driver.find_elements(by=By.CLASS_NAME, value='token-input')[1].get_attribute(
-                            'value')
+                        time.sleep(2)
+                        provider2 = driver.find_elements(by=By.CLASS_NAME, value='text-md')[11].text
+                        # artificial_delay()
+                        # response_flipped = driver.find_elements(by=By.CLASS_NAME, value='token-input')[1].get_attribute(
+                        #     'value')
                         flip.click()
+                        response_flipped = response
                         prices_of_coin.append(
                             [float(el2) if el2 != '' else 0.0, float(response) if response != '' else 0.0,
-                             float(response_flipped) if response_flipped != '' else 0.0])
+                             float(response_flipped) if response_flipped != '' else 0.0,
+                             float(provider) if provider != '' else 0.0, float(provider2) if provider2 != '' else 0.0])
                         # print([float(el2) if el2 != '' else 0.0, float(response) if response != '' else 0.0,
                         #      float(response_flipped) if response_flipped != '' else 0.0])
                     prices_of_coins.append(prices_of_coin)
@@ -388,7 +382,7 @@ class getInfo:
             driver = webdriver.Chrome(path, chrome_options=chrome_options)
             url = "https://app.crescent.network/swap"
             driver.get(url)
-            time.sleep(0.5)
+            time.sleep(1)
             artificial_delay()
 
             driver.find_elements(by=By.CLASS_NAME, value='text-yellowCRE-200')[4].click()
@@ -458,7 +452,7 @@ def save_junoswap():
         except Exception as e:
             with open('junoswap.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(f'[Junoswap is not loaded! ({str(e)})]')
+            print(f'[Junoswap is not loaded! ({str(e)[:25]})]')
     else:
         with open('junoswap.pickle', 'wb') as f:
             pickle.dump(None, f)
@@ -478,7 +472,7 @@ def save_sifchain():
         except Exception as e:
             with open('sifchain.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(f'[Sifchain is not loaded! ({str(e)})]')
+            print(f'[Sifchain is not loaded! ({str(e)[:25]})]')
     else:
         with open('sifchain.pickle', 'wb') as f:
             pickle.dump(None, f)
@@ -497,7 +491,7 @@ def save_marbledao():
         except Exception as e:
             with open('marbledao.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(f'[Marbledao is not loaded! ({str(e)})]')
+            print(f'[Marbledao is not loaded! ({str(e)[:25]})]')
     else:
         with open('marbledao.pickle', 'wb') as f:
             pickle.dump(None, f)
@@ -517,7 +511,7 @@ def save_osmosis():
         except Exception as e:
             with open('osmosis.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(f'[Osmosis is not loaded! ({str(e)})]')
+            print(f'[Osmosis is not loaded! ({str(e)[:25]})]')
     else:
         with open('osmosis.pickle', 'wb') as f:
             pickle.dump(None, f)
@@ -538,7 +532,7 @@ def save_crescent():
         except Exception as e:
             with open('crescent.pickle', 'wb') as f:
                 pickle.dump(None, f)
-            print(f'[Crescent is not loaded! ({str(e)})]')
+            print(f'[Crescent is not loaded! ({str(e)[:25]})]')
     else:
         with open('crescent.pickle', 'wb') as f:
             pickle.dump(None, f)
