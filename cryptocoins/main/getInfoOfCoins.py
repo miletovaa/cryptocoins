@@ -131,7 +131,7 @@ class getInfo:
             driver = webdriver.Chrome(path, chrome_options=chrome_options)
             url = "https://sifchain-dex.forbole.com/#/swap?from=uatom&to=rowan&slippage=1.0"
             driver.get(url)
-            time.sleep(1)
+            time.sleep(5)
             artificial_delay()
 
             # Click on button of all coins

@@ -9,6 +9,7 @@ except:
 
 try:
     data['sifchain'] = getInfo.Sifchain.get_all_coins()
+    print(data['sifchain'])
 except:
     print(f'[Sifchain is not loaded!]')
 
