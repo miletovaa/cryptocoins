@@ -523,7 +523,6 @@ def save_crescent():
             start = datetime.datetime.now()
             data = getInfo.Crescent.get_prices(configs_data['main_coin'], configs_data['values'],
                                                configs_data['add_coins']['crescent'])
-            print(data)
             with open('crescent.pickle', 'wb') as f:
                 pickle.dump(data, f)
             # xlsx_writer.write()
