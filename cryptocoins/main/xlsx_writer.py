@@ -33,10 +33,10 @@ def write():
             except:
                 continue
 
-    for i in range(3,43):
+    for i in range(3, 43):
         for j in range(105, 125):
             try:
-                worksheet.cell(i,j).value = ''
+                worksheet.cell(i, j).value = ''
             except:
                 continue
 
@@ -78,9 +78,9 @@ def write():
         for el in data['sifchain']:
             for i in range(1, len(el)):
                 worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 5).value = el[i][1] if el[i][1] != 0 else ''
-                worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 10).value = el[i][2] if el[i][2] != 0 else ''
-                worksheet.cell(all_coins.index(el[0]) + 3, 105).value = el[i][3] if el[i][3] != 0 else ''
-                worksheet.cell(all_coins.index(el[0]) + 3, 106).value = el[i][4] if el[i][4] != 0 else ''
+                # worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 10).value = el[i][2] if el[i][2] != 0 else ''
+                worksheet.cell(all_coins.index(el[0]) + 3, 105 + 2 * (i - 1)).value = el[i][3] if el[i][3] != 0 else ''
+                worksheet.cell(all_coins.index(el[0]) + 3, 106 + 2 * (i - 1)).value = el[i][4] if el[i][4] != 0 else ''
     if data['marbledao']:
         for el in data['marbledao']:
             for i in range(1, len(el)):

@@ -176,14 +176,14 @@ class getInfo:
                         time.sleep(2)
                         # print(driver.find_elements(by=By.CLASS_NAME, value='token-input')[3].get_attribute('value'))
                         response = driver.find_elements(by=By.CLASS_NAME, value='token-input')[3].get_attribute('value')
-                        provider = driver.find_elements(by=By.CLASS_NAME, value='text-md')[11].text
+                        provider = driver.find_elements(by=By.CLASS_NAME, value='text-md')[15].text
 
                         # Click on button to swipe coins
                         flip = driver.find_elements(by=By.TAG_NAME, value='button')[8]
                         flip.click()
 
                         time.sleep(2)
-                        provider2 = driver.find_elements(by=By.CLASS_NAME, value='text-md')[11].text
+                        provider2 = driver.find_elements(by=By.CLASS_NAME, value='text-md')[15].text
                         # artificial_delay()
                         # response_flipped = driver.find_elements(by=By.CLASS_NAME, value='token-input')[1].get_attribute(
                         #     'value')

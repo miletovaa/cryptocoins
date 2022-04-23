@@ -15,5 +15,5 @@ def send_message():
 
     if data is not None:
         requests.get(
-            f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHANNEL_ID}&text=(TEST) {str(data)}')
+            f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHANNEL_ID}&text={str(data)}')
 
