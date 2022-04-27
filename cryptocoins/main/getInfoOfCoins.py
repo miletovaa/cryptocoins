@@ -95,7 +95,6 @@ class getInfo:
                     addCoins[el2].click()
                     prices_of_coin = [junoswap_list[el2]]
                     for el in values:
-                        start = datetime.datetime.now()
                         mainCoinInput.send_keys(Keys.CONTROL + "a")
                         mainCoinInput.send_keys(Keys.DELETE)
                         mainCoinInput.send_keys(str(int(el)))
@@ -182,7 +181,7 @@ class getInfo:
                         flip = driver.find_elements(by=By.TAG_NAME, value='button')[8]
                         flip.click()
 
-                        time.sleep(2)
+                        time.sleep(0.5)
                         provider2 = driver.find_elements(by=By.CLASS_NAME, value='text-md')[15].text
                         # artificial_delay()
                         # response_flipped = driver.find_elements(by=By.CLASS_NAME, value='token-input')[1].get_attribute(
@@ -429,7 +428,8 @@ class getInfo:
                         flip.click()
                         time.sleep(0.25)
                         response_flipped = driver.find_elements(by=By.TAG_NAME, value='input')[1].get_attribute('value')
-                        prices_of_coin.append([el2, response, response_flipped])
+                        prices_of_coin.append([el2, float(response) if response != '' else 0.0,
+                                               float(response_flipped) if response_flipped != '' else 0.0])
                         flip.click()
                     prices_of_coins.append(prices_of_coin)
             return prices_of_coins
@@ -556,6 +556,11 @@ def main():
         osmosis.join()
         print('[Saving...]')
         xlsx_writer.write()
+        junoswap.close()
+        crescent.close()
+        sifchain.close()
+        marbledao.close()
+        osmosis.close()
 
 
 if __name__ == '__main__':

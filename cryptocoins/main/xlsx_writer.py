@@ -3,7 +3,7 @@ from printInfo import get_prices
 import pickle
 import openpyxl
 import subprocess
-from getY1 import send_message
+from getY1 import send_message_Y1
 
 
 def save_xlsx_file():
@@ -100,4 +100,4 @@ def write():
 
     save_xlsx_file()
 
-    send_message()
+    send_message_Y1()
