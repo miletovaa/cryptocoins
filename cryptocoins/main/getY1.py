@@ -2,6 +2,7 @@ import subprocess
 import openpyxl
 import requests
 from multiprocessing import Process
+from swapCoins import SwapCoins
 
 BOT_TOKEN = '5187298061:AAH8PJ0VRfbQkpiOmFUQ-1kroZqkCM4a24I'
 CHANNEL_ID = '-1001261505666'
@@ -67,10 +68,12 @@ def send_message(data):
 
 
 def swapOsmosis(main_coin, value, second_coin):
-    subprocess.Popen(
-        ['python3', 'swapOsmosis.py', str(main_coin),
-         str(value),
-         str(second_coin)])
+    # subprocess.Popen(
+    #     ['python3', 'swapOsmosis.py', str(main_coin),
+    #      str(value),
+    #      str(second_coin)])
+    osmosis = SwapCoins.Osmosis()
+    osmosis.swapCoins(main_coin, value, second_coin)
 
 
 def swapJunoSwap(main_coin, value, second_coin):
@@ -81,10 +84,12 @@ def swapJunoSwap(main_coin, value, second_coin):
 
 
 def swapSifchain(main_coin, value, second_coin):
-    subprocess.Popen(
-        ['python3', 'swapSifchain.py', str(main_coin),
-         str(value),
-         str(second_coin)])
+    # subprocess.Popen(
+    #     ['python3', 'swapSifchain.py', str(main_coin),
+    #      str(value),
+    #      str(second_coin)])
+    sifchain = SwapCoins.Sifchain()
+    sifchain.swapCoins(main_coin, value, second_coin)
 
 
 def swapCrescent(main_coin, value, second_coin):

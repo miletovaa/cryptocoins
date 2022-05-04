@@ -131,7 +131,6 @@ class SwapCoins:
     class Sifchain:
         def countCoins(self, driver):
             driver.get('https://sifchain-dex.redstarling.com/#/balances')
-            time.sleep(3)
             window_after = driver.window_handles[0]
             try:
                 window_before = driver.window_handles[1]
@@ -146,7 +145,7 @@ class SwapCoins:
                 except:
                     break
             driver.switch_to.window(window_after)
-            time.sleep(3)
+            time.sleep(10)
             return [[el.text.split('\n')[0].lower(), float(el.text.split('\n')[1])] for el in
                     driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
 
