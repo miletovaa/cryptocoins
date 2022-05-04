@@ -33,6 +33,14 @@ def login(driver):
 
 class SwapCoins:
     class JunoSwap:
+        def countCoins(self, driver):
+            driver.get('https://junoswap.com/transfer')
+            time.sleep(1.5)
+            coins = [el.text for el in driver.find_elements(by=By.CLASS_NAME, value='c-dOfGRD-fyTCeL-variant-primary')][
+                    1:]
+            coins = coins[:coins.index('Other tokens')]
+            coins = [[el.split(' ')[1].lower(), float(el.split(' ')[0])] for el in coins]
+            return coins
 
         def swapCoins(self, main_coin, value, second_coin):
             try:
@@ -50,7 +58,7 @@ class SwapCoins:
                 driver.find_elements(by=By.CLASS_NAME, value='c-frhyQ')[1].click()
                 time.sleep(1)
                 subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
-                time.sleep(1)
+                time.sleep(1.5)
                 driver.find_elements(by=By.CLASS_NAME, value='c-frhyQ')[1].click()
                 time.sleep(1)
                 subprocess.Popen(['xdotool', 'key', '0xff09'])
@@ -60,6 +68,11 @@ class SwapCoins:
                 subprocess.Popen(['xdotool', 'key', 'Return'])
 
                 time.sleep(1)
+
+                coins_count = self.countCoins(driver)
+                print(coins_count)
+                driver.get(url)
+                time.sleep(2)
 
                 # Open list to choose main coin
                 driver.find_element(by=By.CLASS_NAME, value='c-fkNNfJ-cjOYsE-state-selected').click()
@@ -72,8 +85,10 @@ class SwapCoins:
                 # Choose a main coin
                 driver.find_elements(by=By.CLASS_NAME, value='c-jVTssZ')[main_coin_id].click()
 
+                time.sleep(0.3)
+
                 # Button for choosing an addiction coins
-                addCoinsButton = driver.find_elements(by=By.CLASS_NAME, value='c-gejiUb')[1]
+                addCoinsButton = driver.find_elements(by=By.CLASS_NAME, value='c-frhyQ')[5]
 
                 # Click button for choosing an addiction coin
                 addCoinsButton.click()
@@ -86,11 +101,12 @@ class SwapCoins:
                 mainCoinInput.send_keys(Keys.DELETE)
                 mainCoinInput.send_keys(str(float(value)))
 
-                time.sleep(0.5)
-                swapButton = driver.find_elements(by=By.TAG_NAME, value='button')[7]
+                time.sleep(2)
+                # time.sleep(10000000)
+                swapButton = driver.find_elements(by=By.TAG_NAME, value='button')[5]
                 swapButton.click()
 
-                time.sleep(2)
+                time.sleep(3)
 
                 for i in range(8):
                     subprocess.Popen(['xdotool', 'key', '0xff09'])
@@ -98,12 +114,42 @@ class SwapCoins:
                 subprocess.Popen(['xdotool', 'key', 'Return'])
 
                 response_of_tr = f'(JunoSwap) Transaction was completed successfully! Main coin: {main_coin}, second coin: {second_coin}, value: {value}'
-                send_message(response_of_tr)
+                time.sleep(5)
+                coins_count2 = self.countCoins(driver)
+                print(coins_count2)
+                if coins_count2 == coins_count:
+                    response_of_tr = '(JunoSwap) The transaction failed!'
+                    send_message(response_of_tr)
+                    self.swapCoins(main_coin, value, second_coin)
+                else:
+                    send_message(response_of_tr)
             except Exception as e:
-                response_of_tr = f'(JunoSwap) The transaction failed duo to an error! Error: {str(e)[:50]}'
+                response_of_tr = f'(JunoSwap) The transaction failed duo to an error! Error: {str(e)}'
                 send_message(response_of_tr)
+                self.swapCoins(main_coin, value, second_coin)
 
     class Sifchain:
+        def countCoins(self, driver):
+            driver.get('https://sifchain-dex.redstarling.com/#/balances')
+            time.sleep(3)
+            window_after = driver.window_handles[0]
+            try:
+                window_before = driver.window_handles[1]
+                driver.switch_to.window(window_before)
+            except:
+                pass
+            time.sleep(1)
+
+            while True:
+                try:
+                    driver.find_elements(by=By.TAG_NAME, value='button')[1].click()
+                except:
+                    break
+            driver.switch_to.window(window_after)
+            time.sleep(3)
+            return [[el.text.split('\n')[0].lower(), float(el.text.split('\n')[1])] for el in
+                    driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
+
         def swapCoins(self, main_coin, count, second_coin):
             try:
                 # Configs
@@ -117,14 +163,27 @@ class SwapCoins:
                 time.sleep(5)
 
                 time.sleep(2)
-                for i in range(15):
-                    subprocess.Popen(['xdotool', 'key', '0xff09'])
-                    time.sleep(0.1)
-                    subprocess.Popen(['xdotool', 'key', '0xff09'])
-                    time.sleep(0.1)
-                    subprocess.Popen(['xdotool', 'key', 'Return'])
-                    time.sleep(0.1)
+                window_after = driver.window_handles[0]
+                try:
+                    window_before = driver.window_handles[1]
+                    driver.switch_to.window(window_before)
+                except:
+                    pass
                 time.sleep(1)
+
+                while True:
+                    try:
+                        driver.find_elements(by=By.TAG_NAME, value='button')[1].click()
+                    except:
+                        break
+                driver.switch_to.window(window_after)
+                count_before = self.countCoins(driver)
+
+                main_coin_count_before = count_before[[el[0] for el in count_before].index(main_coin)][1]
+                second_coin_count_before = count_before[[el[0] for el in count_before].index(second_coin)][1]
+
+                driver.get(url)
+                time.sleep(3)
 
                 # Choosing the main coin
                 driver.find_elements(by=By.TAG_NAME, value='button')[6].click()
@@ -153,17 +212,51 @@ class SwapCoins:
                 time.sleep(2)
                 driver.find_elements(by=By.TAG_NAME, value='button')[22].click()
                 time.sleep(6)
-                for i in range(12):
-                    subprocess.Popen(['xdotool', 'key', '0xff09'])
-                    time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', 'Return'])
+
+                window_after = driver.window_handles[0]
+                try:
+                    window_before = driver.window_handles[1]
+                    driver.switch_to.window(window_before)
+                except:
+                    pass
+                time.sleep(1)
+
+                while True:
+                    try:
+                        driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                    except:
+                        break
+                driver.switch_to.window(window_after)
+
+                time.sleep(5)
+
                 response_of_tr = f'(Sifchain) Transaction was completed successfully! Main coin: {main_coin}, second coin: {second_coin}, value: {count}'
-                send_message(response_of_tr)
+                count_after = self.countCoins(driver)
+
+                main_coin_count_after = count_after[[el[0] for el in count_after].index(main_coin)][1]
+                second_coin_count_after = count_after[[el[0] for el in count_after].index(second_coin)][1]
+
+                print(main_coin_count_before, main_coin_count_after)
+                print(second_coin_count_before, second_coin_count_after)
+
+                if main_coin_count_before == main_coin_count_after or second_coin_count_before == second_coin_count_after:
+                    response_of_tr = f'(Sifchain) The transaction failed!'
+                    send_message(response_of_tr)
+                    self.swapCoins(main_coin, count, second_coin)
+                else:
+                    send_message(response_of_tr)
             except Exception as e:
-                response_of_tr = f'(Sifchain) The transaction failed duo to an error! Error: {str(e)[:50]}'
+                response_of_tr = f'(Sifchain) The transaction failed duo to an error! Error: {str(e)[:150]}'
                 send_message(response_of_tr)
+                self.swapCoins(main_coin, count, second_coin)
 
     class Osmosis:
+        def countCoins(self, driver):
+            driver.get('https://app.osmosis.zone/assets')
+            # print([[el.text.split('\n')[0].lower(), el.text.split('\n')[1]] for el in driver.find_elements(by=By.CLASS_NAME, value='css-1lfky4b')])
+            lst = [el.text for el in driver.find_elements(by=By.CLASS_NAME, value='css-pq4qi6')]
+            return [[lst[lst.index(el) - 1].split(' ')[-1].lower(), float(el)] for el in lst[1::2] if el != '0']
+
         def swapCoins(self, main_coin, count, second_coin):
             try:
                 # Configs
@@ -186,15 +279,23 @@ class SwapCoins:
                 driver.refresh()
 
                 time.sleep(2)
+                window_after = driver.window_handles[0]
+                try:
+                    window_before = driver.window_handles[1]
+                    driver.switch_to.window(window_before)
+                except:
+                    pass
+                time.sleep(1)
 
-                subprocess.Popen(['xdotool', 'key', '0xff09'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', '0xff09'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', 'Return'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', 'Return'])
-                time.sleep(0.1)
+                while True:
+                    try:
+                        driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                    except:
+                        break
+                driver.switch_to.window(window_after)
+
+                count_before = self.countCoins(driver)
+                driver.get(url)
 
                 if main_coin == 'osmo':
                     flip = driver.find_element(by=By.CLASS_NAME, value='css-1so39r0')
@@ -214,33 +315,51 @@ class SwapCoins:
                     all_coins_names = [el.text.split('\n')[0].lower() for el in
                                        driver.find_elements(by=By.CLASS_NAME, value='ml-3')]
                     second_coin_id = all_coins_names.index(second_coin)
-                    driver.find_elements(by=By.CLASS_NAME, value='ml-3')[1].click()
+                    driver.find_elements(by=By.CLASS_NAME, value='ml-3')[second_coin_id].click()
 
                 main_coin_input = driver.find_elements(by=By.CLASS_NAME, value='css-1ui17as')[0]
                 main_coin_input.send_keys(Keys.CONTROL + 'a')
                 main_coin_input.send_keys(Keys.DELETE)
                 main_coin_input.send_keys(str(count))
+                time.sleep(1)
 
                 driver.find_element(by=By.CLASS_NAME, value='css-1vfyg9u').click()
 
                 time.sleep(3)
 
-                subprocess.Popen(['xdotool', 'key', '0xff09'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', '0xff09'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', '0xff09'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', '0xff09'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', 'Return'])
-                time.sleep(0.1)
+                window_after = driver.window_handles[0]
+                try:
+                    window_before = driver.window_handles[1]
+                    driver.switch_to.window(window_before)
+                except:
+                    pass
+                time.sleep(1)
+
+                while True:
+                    try:
+                        driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                    except:
+                        break
+                driver.switch_to.window(window_after)
+
+                time.sleep(5)
 
                 response_of_tr = f'(Osmosis) Transaction was completed successfully! Main coin: {main_coin}, second coin: {second_coin}, value: {count}'
-                send_message(response_of_tr)
+                count_after = self.countCoins(driver)
+                main_coin_count_before = count_before[[el[0] for el in count_before].index(main_coin)][1]
+                main_coin_count_after = count_after[[el[0] for el in count_after].index(main_coin)][1]
+                second_coin_count_before = count_before[[el[0] for el in count_before].index(second_coin)][1]
+                second_coin_count_after = count_after[[el[0] for el in count_after].index(second_coin)][1]
+                if main_coin_count_before == main_coin_count_after or second_coin_count_before == second_coin_count_after:
+                    response_of_tr = f'(Osmosis) The transaction failed!'
+                    send_message(response_of_tr)
+                    self.swapCoins(main_coin, count, second_coin)
+                else:
+                    send_message(response_of_tr)
             except Exception as e:
-                response_of_tr = f'(Osmosis) The transaction failed duo to an error! Error: {str(e)[:50]}'
+                response_of_tr = f'(Osmosis) The transaction failed duo to an error! Error: {str(e)[:150]}'
                 send_message(response_of_tr)
+                self.swapCoins(main_coin, count, second_coin)
 
     class Crescent:
         def swapCoins(self, main_coin, value, second_coin):
@@ -319,12 +438,12 @@ class SwapCoins:
 
                 time.sleep(6)
 
-                response_of_tr = '(Crescent) ' + driver.find_elements(by=By.CLASS_NAME, value='text-sm')[11].text + f' Main coin: {main_coin}, second coin: {second_coin}, value: {value}'
+                response_of_tr = '(Crescent) ' + driver.find_elements(by=By.CLASS_NAME, value='text-sm')[
+                    11].text + f' Main coin: {main_coin}, second coin: {second_coin}, value: {value}'
                 send_message(response_of_tr)
             except Exception as e:
-                response_of_tr = f'(Crescent) The transaction failed duo to an error! Error: {str(e)[:50]}'
+                response_of_tr = f'(Crescent) The transaction failed duo to an error! Error: {str(e)[:150]}'
                 send_message(response_of_tr)
-
 
 # # Junoswap (Done)
 # junoswap = SwapCoins.JunoSwap()

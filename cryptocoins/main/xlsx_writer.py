@@ -8,11 +8,12 @@ from getY1 import send_message_Y1
 
 def save_xlsx_file():
     subprocess.Popen(['libreoffice', '--calc', './result.xlsx'])
-    time.sleep(3)
-    subprocess.Popen(['xdotool', 'key', 'ctrl+s'])
-    time.sleep(0.5)
+    time.sleep(5)
+    # subprocess.Popen(['xdotool', 'key', 'ctrl+s'])
+    # time.sleep(0.5)
     subprocess.Popen(['xdotool', 'key', 'Return'])
     time.sleep(0.5)
+    time.sleep(100000)
     subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
     time.sleep(0.5)
     subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
@@ -97,6 +98,7 @@ def write():
                 worksheet.cell(all_coins.index(el[0]) + 3, 11 * (i - 1) + 3).value = el[i][1] if el[i][1] != 0 else ''
 
     workbook.save('result.xlsx')
+    workbook.close()
 
     save_xlsx_file()
 
