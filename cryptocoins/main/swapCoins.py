@@ -4,8 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import subprocess
 import time
-import requests
-from getY1 import send_message
+from send_message import send_message
 
 private_key = 'wrap indicate hello ahead saddle news decrease arctic help deposit student fiscal between potato urge resource boss robot awake move arrange fitness wild work'
 account_name = 'trade'

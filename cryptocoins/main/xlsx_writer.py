@@ -9,11 +9,10 @@ from getY1 import send_message_Y1
 def save_xlsx_file():
     subprocess.Popen(['libreoffice', '--calc', './result.xlsx'])
     time.sleep(5)
-    # subprocess.Popen(['xdotool', 'key', 'ctrl+s'])
-    # time.sleep(0.5)
+    subprocess.Popen(['xdotool', 'key', 'ctrl+s'])
+    time.sleep(0.5)
     subprocess.Popen(['xdotool', 'key', 'Return'])
     time.sleep(0.5)
-    time.sleep(100000)
     subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
     time.sleep(0.5)
     subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
@@ -24,7 +23,6 @@ def save_xlsx_file():
 
 def write():
     workbook = openpyxl.load_workbook('result.xlsx')
-    # worksheet = workbook.add_worksheet('Coins')
     worksheet = workbook.active
 
     for i in range(3, 43):
@@ -67,8 +65,6 @@ def write():
 
     for j in range(len(configs['values'])):
         worksheet.merge_cells(start_row=3, start_column=j * 11 + 2, end_row=len(all_coins) + 2, end_column=j * 11 + 2)
-
-    # worksheet.merge_cells(start_row=3, start_column=2, end_row=6, end_column=2)
 
     if data['junoswap']:
         for el in data['junoswap']:

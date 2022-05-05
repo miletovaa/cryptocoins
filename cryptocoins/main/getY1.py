@@ -1,11 +1,8 @@
 import subprocess
 import openpyxl
-import requests
 from multiprocessing import Process
 from swapCoins import SwapCoins
-
-BOT_TOKEN = '5187298061:AAH8PJ0VRfbQkpiOmFUQ-1kroZqkCM4a24I'
-CHANNEL_ID = '-1001261505666'
+from send_message import send_message
 
 
 def send_message_Y1():
@@ -57,14 +54,14 @@ def send_message_Y1():
                                                                sheet.cell(4, 78 + 2 * (i - 1) + 2).value.lower()))
                 func1.start()
                 func2.start()
+                func1.join()
+                func2.join()
+                send_message('Transactions were completed successfully!')
+                func1.close()
+                func2.close()
                 i += 1
             else:
                 break
-
-
-def send_message(data):
-    requests.get(
-        f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHANNEL_ID}&text={str(data)}')
 
 
 def swapOsmosis(main_coin, value, second_coin):
