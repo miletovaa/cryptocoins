@@ -66,15 +66,25 @@ class SwapCoins:
                 driver.find_element(by=By.CLASS_NAME, value='sc-bdvvtL').click()
                 driver.find_elements(by=By.CLASS_NAME, value='c-frhyQ')[1].click()
                 time.sleep(1)
-                subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
-                time.sleep(1.5)
+
+                window_before = driver.window_handles[0]
+                window_after = driver.window_handles[1]
+                driver.switch_to.window(window_after)
+                driver.close()
+                driver.switch_to.window(window_before)
                 driver.find_elements(by=By.CLASS_NAME, value='c-frhyQ')[1].click()
                 time.sleep(1)
-                subprocess.Popen(['xdotool', 'key', '0xff09'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', '0xff09'])
-                time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', 'Return'])
+
+                window_after = driver.window_handles[1]
+                driver.switch_to.window(window_after)
+
+                while True:
+                    try:
+                        driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                    except:
+                        break
+
+                driver.switch_to.window(window_before)
 
                 time.sleep(1)
 
@@ -117,16 +127,26 @@ class SwapCoins:
 
                 time.sleep(3)
 
-                for i in range(8):
-                    subprocess.Popen(['xdotool', 'key', '0xff09'])
-                    time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', 'Return'])
+                window_after = driver.window_handles[1]
+                driver.switch_to.window(window_after)
+                while True:
+                    try:
+                        driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                    except:
+                        break
+
+                driver.switch_to.window(window_before)
 
                 response_of_tr = f'(JunoSwap) Transaction was completed successfully! Main coin: {main_coin}, second coin: {second_coin}, value: {value}'
-                time.sleep(5)
+                time.sleep(8)
                 coins_count2 = self.countCoins(driver)
                 print(coins_count2)
-                if coins_count2 == coins_count:
+
+                main_coin_count_before = coins_count[[el[0] for el in coins_count].index(main_coin)][1]
+                second_coin_count_before = coins_count[[el[0] for el in coins_count].index(second_coin)][1]
+                main_coin_count_after = coins_count2[[el[0] for el in coins_count2].index(main_coin)][1]
+                second_coin_count_after = coins_count2[[el[0] for el in coins_count2].index(second_coin)][1]
+                if main_coin_count_before == main_coin_count_after or second_coin_count_before == second_coin_count_after:
                     response_of_tr = '(JunoSwap) The transaction failed!'
                     send_message(response_of_tr)
                     self.swapCoins(main_coin, value, second_coin)
