@@ -16,6 +16,16 @@ chrome_options.add_argument('--no-sandbox')
 # chrome_options.add_argument('--headless')
 chrome_options.add_extension('Keplr 0.10.2.0.crx')
 
+def get_name_of_coin(s):
+    i = 1
+    if '.' not in s:
+        return s[:-1]
+    for el in s[1:]:
+        if el in '0123456789.':
+            return s[:i]
+        else:
+            i+=1
+
 
 def login(driver):
     # Base login on Keplr
@@ -185,31 +195,39 @@ class SwapCoins:
 
                 # Choosing the main coin
                 driver.find_elements(by=By.TAG_NAME, value='button')[6].click()
-                all_main_coins = [el.text.split('\n')[0].lower() for el in
-                                  driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
-                main_coin_id = all_main_coins.index(main_coin)
-                driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[main_coin_id].click()
+                driver.find_element(by=By.ID, value='token-search').send_keys(str(main_coin))
+                # all_main_coins = [el.text.split('\n')[0].lower() for el in
+                                #   driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
+                # main_coin_id = all_main_coins.index(main_coin)
+                time.sleep(1)
+                driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[0].click()
 
                 # Choosing the second coin
                 driver.find_elements(by=By.TAG_NAME, value='button')[9].click()
                 time.sleep(2)
-                all_second_coins = [el.text.split('\n')[0].lower() for el in
-                                    driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
-                second_coin_id = all_second_coins.index(second_coin)
+                # all_second_coins = [get_name_of_coin(el.get_attribute('textContent').lower()) for el in
+                #                     driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
+                # print(all_second_coins)
+                # second_coin_id = all_second_coins.index(second_coin)
                 # print(all_second_coins, second_coin_id)
                 # time.sleep(1000000)
-                driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[second_coin_id].click()
+                driver.find_element(by=By.ID, value='token-search').send_keys(str(second_coin))
+                time.sleep(1)
+                # print(len(driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')))
+                # time.sleep(1000000)
+                driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[0].click()
 
                 mainCoinInput = driver.find_elements(by=By.CLASS_NAME, value='token-input')[1]
                 mainCoinInput.send_keys(Keys.CONTROL + 'a')
                 mainCoinInput.send_keys(Keys.DELETE)
                 mainCoinInput.send_keys(str(count))
 
-                time.sleep(3)
-                driver.find_elements(by=By.TAG_NAME, value='button')[17].click()
-                time.sleep(2)
-                driver.find_elements(by=By.TAG_NAME, value='button')[22].click()
+                
                 time.sleep(6)
+                driver.find_elements(by=By.TAG_NAME, value='button')[17].click()
+                time.sleep(6)
+                driver.find_elements(by=By.TAG_NAME, value='button')[22].click()
+                time.sleep(13)
 
                 window_after = driver.window_handles[0]
                 try:
@@ -226,7 +244,7 @@ class SwapCoins:
                         break
                 driver.switch_to.window(window_after)
 
-                time.sleep(5)
+                time.sleep(20)
 
                 response_of_tr = f'(Sifchain) Transaction was completed successfully! Main coin: {main_coin}, second coin: {second_coin}, value: {count}'
                 count_after = self.countCoins(driver)
@@ -251,6 +269,7 @@ class SwapCoins:
     class Osmosis:
         def countCoins(self, driver):
             driver.get('https://app.osmosis.zone/assets')
+            time.sleep(2)
             # print([[el.text.split('\n')[0].lower(), el.text.split('\n')[1]] for el in driver.find_elements(by=By.CLASS_NAME, value='css-1lfky4b')])
             lst = [el.text for el in driver.find_elements(by=By.CLASS_NAME, value='css-pq4qi6')]
             return [[lst[lst.index(el) - 1].split(' ')[-1].lower(), float(el)] for el in lst[1::2] if el != '0']
@@ -340,7 +359,7 @@ class SwapCoins:
                         break
                 driver.switch_to.window(window_after)
 
-                time.sleep(5)
+                time.sleep(8)
 
                 response_of_tr = f'(Osmosis) Transaction was completed successfully! Main coin: {main_coin}, second coin: {second_coin}, value: {count}'
                 count_after = self.countCoins(driver)
