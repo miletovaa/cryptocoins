@@ -16,6 +16,7 @@ chrome_options.add_argument('--no-sandbox')
 # chrome_options.add_argument('--headless')
 chrome_options.add_extension('Keplr 0.10.2.0.crx')
 
+
 def get_name_of_coin(s):
     i = 1
     if '.' not in s:
@@ -24,7 +25,7 @@ def get_name_of_coin(s):
         if el in '0123456789.':
             return s[:i]
         else:
-            i+=1
+            i += 1
 
 
 def login(driver):
@@ -217,7 +218,7 @@ class SwapCoins:
                 driver.find_elements(by=By.TAG_NAME, value='button')[6].click()
                 driver.find_element(by=By.ID, value='token-search').send_keys(str(main_coin))
                 # all_main_coins = [el.text.split('\n')[0].lower() for el in
-                                #   driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
+                #   driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
                 # main_coin_id = all_main_coins.index(main_coin)
                 time.sleep(1)
                 driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')[0].click()
@@ -242,7 +243,6 @@ class SwapCoins:
                 mainCoinInput.send_keys(Keys.DELETE)
                 mainCoinInput.send_keys(str(count))
 
-                
                 time.sleep(6)
                 driver.find_elements(by=By.TAG_NAME, value='button')[17].click()
                 time.sleep(6)
@@ -399,6 +399,13 @@ class SwapCoins:
                 self.swapCoins(main_coin, count, second_coin)
 
     class Crescent:
+        def countCoins(self, driver):
+            driver.get('https://app.crescent.network/portfolio')
+            time.sleep(2)
+            names = [el.text for el in driver.find_elements(by=By.CLASS_NAME, value='BOLD18')][2:]
+            count = [el.text for el in driver.find_elements(by=By.CLASS_NAME, value='BOLD24')][3:]
+            return [[names[i].lower(), float(count[i])] for i in range(len(names))]
+
         def swapCoins(self, main_coin, value, second_coin):
             try:
                 # Configs
@@ -414,8 +421,47 @@ class SwapCoins:
                 driver.find_elements(by=By.CLASS_NAME, value='text-yellowCRE-200')[4].click()
                 driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[3].click()
 
+                time.sleep(.5)
+                driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                time.sleep(.5)
+                driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                time.sleep(2)
+
+                window_before = driver.window_handles[0]
+                window_after = driver.window_handles[1]
+
+                driver.switch_to.window(window_after)
+                driver.close()
+
+                driver.switch_to.window(window_before)
+
+                time.sleep(.5)
+                driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                time.sleep(.5)
+                driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                time.sleep(.75)
+
+                window_after = driver.window_handles[1]
+                # Accept all the rules
+                driver.switch_to.window(window_after)
+                while True:
+                    try:
+                        time.sleep(.75)
+                        window_after = driver.window_handles[1]
+                        driver.switch_to.window(window_after)
+                        driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
+                    except:
+                        break
+
+                driver.switch_to.window(window_before)
+                count_before = self.countCoins(driver)
+                print(count_before)
+
+                driver.get('https://app.crescent.network/swap')
+                time.sleep(2)
+
                 # Click to view list of coins
-                driver.find_elements(by=By.CLASS_NAME, value='text-blackCRE')[5].click()
+                driver.find_elements(by=By.CLASS_NAME, value='text-blackCRE')[7].click()
 
                 main_coin_el = \
                     [el for el in driver.find_elements(by=By.CLASS_NAME, value='sBOLD18') if
@@ -425,62 +471,45 @@ class SwapCoins:
                 main_coin_el.click()
 
                 # Click to view all list if addiction coins
-                driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[1].click()
+                driver.find_elements(by=By.CLASS_NAME, value='text-whiteCRE')[0].click()
                 time.sleep(0.1)
                 add_coins_el = [el for el in driver.find_elements(by=By.CLASS_NAME, value='sBOLD18') if
                                 el.text.lower() == second_coin]
                 # Choose the first addiction coin
                 add_coins_el[0].click()
 
-                driver.find_elements(by=By.TAG_NAME, value='button')[7].click()
-                time.sleep(.1)
-                driver.find_elements(by=By.TAG_NAME, value='button')[10].click()
-
-                time.sleep(1)
-
-                subprocess.Popen(['xdotool', 'key', 'ctrl+F4'])
-                time.sleep(1)
-
-                driver.find_elements(by=By.TAG_NAME, value='button')[7].click()
-                time.sleep(.1)
-                driver.find_elements(by=By.TAG_NAME, value='button')[10].click()
-
-                time.sleep(1)
-
-                for i in range(3):
-                    time.sleep(1)
-                    subprocess.Popen(['xdotool', 'key', '0xff09'])
-                    time.sleep(0.1)
-                    subprocess.Popen(['xdotool', 'key', '0xff09'])
-                    time.sleep(0.1)
-                    subprocess.Popen(['xdotool', 'key', 'Return'])
-                    time.sleep(0.1)
-
                 main_coin_input = driver.find_elements(by=By.TAG_NAME, value='input')[0]
                 main_coin_input.send_keys(Keys.CONTROL + 'a')
                 main_coin_input.send_keys(Keys.DELETE)
                 main_coin_input.send_keys(str(value))
-                time.sleep(6)
-
-                # print(driver.find_elements(by=By.TAG_NAME, value='button')[8].text)
-                driver.find_elements(by=By.TAG_NAME, value='button')[8].click()
-
                 time.sleep(2)
+                driver.find_elements(by=By.TAG_NAME, value='button')[8].click()
+                time.sleep(3)
+                window_after = driver.window_handles[1]
+                driver.switch_to.window(window_after)
 
-                for i in range(7):
-                    subprocess.Popen(['xdotool', 'key', '0xff09'])
-                    time.sleep(0.1)
-                subprocess.Popen(['xdotool', 'key', 'Return'])
-                time.sleep(0.1)
+                driver.find_elements(by=By.TAG_NAME, value='button')[-1].click()
 
-                time.sleep(6)
+                time.sleep(13)
+                driver.switch_to.window(window_before)
+                count_after = self.countCoins(driver)
 
-                response_of_tr = '(Crescent) ' + driver.find_elements(by=By.CLASS_NAME, value='text-sm')[
-                    11].text + f' Main coin: {main_coin}, second coin: {second_coin}, value: {value}'
-                send_message(response_of_tr)
+                main_coin_count_before = count_before[[el[0] for el in count_before].index(main_coin)][1]
+                main_coin_count_after = count_after[[el[0] for el in count_after].index(main_coin)][1]
+                second_coin_count_before = count_before[[el[0] for el in count_before].index(second_coin)][1]
+                second_coin_count_after = count_after[[el[0] for el in count_after].index(second_coin)][1]
+
+                response_of_tr = f'(Crescent) Transaction was completed successfully! Main coin: {main_coin}, second coin: {second_coin}, value: {value}'
+                if main_coin_count_before == main_coin_count_after or second_coin_count_before == second_coin_count_after:
+                    response_of_tr = f'(Crescent) The transaction failed!'
+                    send_message(response_of_tr)
+                    self.swapCoins(main_coin, value, second_coin)
+                else:
+                    send_message(response_of_tr)
             except Exception as e:
                 response_of_tr = f'(Crescent) The transaction failed duo to an error! Error: {str(e)[:150]}'
                 send_message(response_of_tr)
+                self.swapCoins(main_coin, value, second_coin)
 
 # # Junoswap (Done)
 # junoswap = SwapCoins.JunoSwap()
