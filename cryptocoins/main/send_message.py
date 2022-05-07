@@ -5,5 +5,6 @@ CHANNEL_ID = '-1001261505666'
 
 
 def send_message(data):
-    requests.get(
-        f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHANNEL_ID}&text={str(data)}')
+    print('--------', data)
+    # requests.get(
+        # f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHANNEL_ID}&text={str(data)}')

@@ -32,6 +32,7 @@ def login(driver):
     # Base login on Keplr
     link = 'chrome-extension://dmkamcknogkgcdfhhbddcghachkejeap/popup.html#/register'
     driver.get(link)
+
     driver.find_elements(by=By.TAG_NAME, value='button')[2].click()
     driver.find_elements(by=By.TAG_NAME, value='input')[0].send_keys(private_key)
     driver.find_elements(by=By.TAG_NAME, value='input')[1].send_keys(account_name)
@@ -52,7 +53,7 @@ class SwapCoins:
             coins = [[el.split(' ')[1].lower(), float(el.split(' ')[0])] for el in coins]
             return coins
 
-        def swapCoins(self, main_coin, value, second_coin):
+        def swapCoins(self, main_coin, value, second_coin, return_dict={}):
             try:
                 # Configs
                 path = driver_path
@@ -153,6 +154,8 @@ class SwapCoins:
                     self.swapCoins(main_coin, value, second_coin)
                 else:
                     send_message(response_of_tr)
+                    return_dict['junoswap'] = [[main_coin, main_coin_count_after],
+                                               [second_coin, second_coin_count_after]]
             except Exception as e:
                 response_of_tr = f'(JunoSwap) The transaction failed duo to an error! Error: {str(e)}'
                 send_message(response_of_tr)
@@ -179,7 +182,7 @@ class SwapCoins:
             return [[el.text.split('\n')[0].lower(), float(el.text.split('\n')[1])] for el in
                     driver.find_elements(by=By.CLASS_NAME, value='list-complete-item')]
 
-        def swapCoins(self, main_coin, count, second_coin):
+        def swapCoins(self, main_coin, count, second_coin, return_dict={}):
             try:
                 # Configs
                 path = driver_path
@@ -281,6 +284,8 @@ class SwapCoins:
                     self.swapCoins(main_coin, count, second_coin)
                 else:
                     send_message(response_of_tr)
+                    return_dict['sifchain'] = [[main_coin, main_coin_count_after],
+                                               [second_coin, second_coin_count_after]]
             except Exception as e:
                 response_of_tr = f'(Sifchain) The transaction failed duo to an error! Error: {str(e)[:150]}'
                 send_message(response_of_tr)
@@ -294,7 +299,7 @@ class SwapCoins:
             lst = [el.text for el in driver.find_elements(by=By.CLASS_NAME, value='css-pq4qi6')]
             return [[lst[lst.index(el) - 1].split(' ')[-1].lower(), float(el)] for el in lst[1::2] if el != '0']
 
-        def swapCoins(self, main_coin, count, second_coin):
+        def swapCoins(self, main_coin, count, second_coin, return_dict={}):
             try:
                 # Configs
                 path = driver_path
@@ -393,6 +398,8 @@ class SwapCoins:
                     self.swapCoins(main_coin, count, second_coin)
                 else:
                     send_message(response_of_tr)
+                    return_dict['osmosis'] = [[main_coin, main_coin_count_after],
+                                              [second_coin, second_coin_count_after]]
             except Exception as e:
                 response_of_tr = f'(Osmosis) The transaction failed duo to an error! Error: {str(e)[:150]}'
                 send_message(response_of_tr)
@@ -406,7 +413,7 @@ class SwapCoins:
             count = [el.text for el in driver.find_elements(by=By.CLASS_NAME, value='BOLD24')][3:]
             return [[names[i].lower(), float(count[i])] for i in range(len(names))]
 
-        def swapCoins(self, main_coin, value, second_coin):
+        def swapCoins(self, main_coin, value, second_coin, return_dict={}):
             try:
                 # Configs
                 path = driver_path
@@ -506,6 +513,8 @@ class SwapCoins:
                     self.swapCoins(main_coin, value, second_coin)
                 else:
                     send_message(response_of_tr)
+                    return_dict['crescent'] = [[main_coin, main_coin_count_after],
+                                               [second_coin, second_coin_count_after]]
             except Exception as e:
                 response_of_tr = f'(Crescent) The transaction failed duo to an error! Error: {str(e)[:150]}'
                 send_message(response_of_tr)

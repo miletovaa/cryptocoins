@@ -549,11 +549,13 @@ def main():
         marbledao.start()
         osmosis = Process(target=save_osmosis)
         osmosis.start()
+
         junoswap.join()
         crescent.join()
         sifchain.join()
         marbledao.join()
         osmosis.join()
+
         print('[Saving...]')
         xlsx_writer.write()
         junoswap.close()
